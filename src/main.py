@@ -1,8 +1,8 @@
 import json
 
-import request_validation
-import schedule_parser
-import schedule_to_speech
+from . import request_validation
+from . import schedule_parser
+from . import schedule_to_speech
 
 sp = None
 
@@ -22,18 +22,20 @@ def handler(event, context):
     else:
         answer = event['request']['original_utterance'].lower()
         rv = request_validation.RequestValidator()
-        if event['state']['application']['faculty']:
-            if event['state']['application']['group']:
+        faculty = event['state']['application'].get('faculty')
+        if faculty:
+            group = event['state']['application'].get('group')
+            if group:
                 if rv.validate_date(answer):
                     response_json['response']['text'] = schedule_to_speech.translate(sp.get_schedule(answer), answer)
             else:
-                group_search = rv.validate_group(event['state']['application']['faculty'], answer)
+                group_search = rv.validate_group(faculty, answer)
                 if group_search == "не знаю такой":
                     response_json['response']['text'] = f"Ой, я {group_search}."
                     response_json['end_session'] = True
                 elif group_search == "группа найдена":
-                    sp = schedule_parser.ScheduleParser(event['state']['application']['faculty'], answer)
-                    response_json['response']['text'] = schedule_to_speech.translate(sp.get_schedule(None), None)
+                    sp = schedule_parser.ScheduleParser(faculty, answer)
+                    response_json['response']['text'] = schedule_to_speech.translate(sp.get_schedule())
                     response_json['application_state']['group'] = answer
                 else:
                     response_json['response']['text'] = "Пожалуйста, уточните номер группы."

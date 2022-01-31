@@ -1,4 +1,6 @@
-import schedule_parser
+import datetime
+
+from . import schedule_parser
 
 
 class RequestValidator:
@@ -17,7 +19,7 @@ class RequestValidator:
         groups = self.sp.find_groups(group)
         group_match = 0
         for group in groups:
-            if group['faculty']['name'].lower == faculty or group['faculty']['abbr'].lower == faculty:
+            if group['faculty']['name'].lower() == faculty or group['faculty']['abbr'].lower() == faculty:
                 group_match += 1
         if group_match == 0:
             return "не знаю такой"
@@ -30,4 +32,8 @@ class RequestValidator:
         pass
 
     def validate_date(self, date):
-        pass
+        try:
+            datetime.datetime.strptime(date, '%Y-%m-%d')
+            return True
+        except ValueError:
+            return False

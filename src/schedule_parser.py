@@ -12,7 +12,7 @@ class ScheduleParser:
         self.session = requests.Session()
         self.FACULTY_DICT = self.get_faculties()
         if faculty is not None and group is not None:
-            self.faculty = next(item for item in self.FACULTY_DICT if item["abbr"] == faculty)['id']
+            self.faculty = next(item for item in self.FACULTY_DICT if item["abbr"].lower() == faculty)['id']
             GROUP_DICT = self.get_groups(self.faculty)
             self.group = next(item for item in GROUP_DICT if item['name'] == group)['id']
 
@@ -34,7 +34,7 @@ class ScheduleParser:
         groups = self.get_info(f'https://ruz.spbstu.ru/faculty/{faculty}/groups/')
         return groups['groups']['data'][str(faculty)]
 
-    def get_schedule(self, date):
+    def get_schedule(self, date=None):
         if date is None:
             schedule = self.get_info(f'https://ruz.spbstu.ru/faculty/{self.faculty}/groups/{self.group}')
         else:
