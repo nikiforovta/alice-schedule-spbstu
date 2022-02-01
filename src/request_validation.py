@@ -1,5 +1,3 @@
-import datetime
-
 from . import schedule_parser
 
 
@@ -30,10 +28,3 @@ class RequestValidator:
 
     def validate_teacher(self, teacher):
         pass
-
-    def validate_date(self, date):
-        try:
-            datetime.datetime.strptime(date, '%Y-%m-%d')
-            return True
-        except ValueError:
-            return False

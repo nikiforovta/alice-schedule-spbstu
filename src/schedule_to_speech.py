@@ -1,10 +1,3 @@
-def date_transform(old_date):
-    y, m, d = old_date.split('-')
-    m = f'0{m}' if len(m) == 1 else m
-    d = f'0{d}' if len(d) == 1 else d
-    return '-'.join((y, m, d))
-
-
 WEEKDAY_ARRAY = ["понедельник ", "вторник ", "среду ", "четверг ", "пятницу ", "субботу ", "воскресенье "]
 
 
@@ -25,9 +18,21 @@ def translate_day(day):
         res += f"{count} пар. "
 
     for lesson in day['lessons']:
-        res += f"C {lesson['time_start']} до {lesson['time_end']} {lesson['subject'].lower()}, " \
-               f"{lesson['typeObj']['name'].lower()}. Преподаватель - {lesson['teachers'][0]['full_name']}. " \
-               f"{lesson['auditories'][0]['building']['name']}, аудитория {lesson['auditories'][0]['name']}. "
+        time_start = lesson.get('time_start')
+        if time_start is not None:
+            res += f"C {time_start} "
+        time_end = lesson.get('time_end')
+        if time_end is not None:
+            res += f"до {lesson['time_end']} {lesson['subject'].lower()}, {lesson['typeObj']['name'].lower()}. "
+        teachers = lesson.get('teachers')
+        if teachers is not None:
+            res += f"Преподаватель - {lesson['teachers'][0]['full_name']}. "
+        auditories = lesson.get('auditories')
+        if auditories is not None:
+            if auditories[0]['name'] == 'Дистанционно':
+                res += "Занятие дистанционно."
+            else:
+                res += f"{auditories[0]['building']['name']}, аудитория {auditories[0]['name']}. "
         res += "\n"
     return res
 
@@ -35,15 +40,14 @@ def translate_day(day):
 def translate(schedule, date=None):
     res = ""
     if date is not None:
-        date = date_transform(date)
         day = next((item for item in schedule if item["date"] == date), None)
         if day is None:
             res += "В этот день нет пар."
         else:
             res += translate_day(day)
     else:
-        for day in schedule:
-            res += translate_day(day)
-            res += "Еще я могу рассказать расписание для выбранной даты.\n"
+        day = schedule[0]
+        res += translate_day(day)
+        res += "Еще я могу рассказать расписание для выбранной даты.\n"
 
     return res

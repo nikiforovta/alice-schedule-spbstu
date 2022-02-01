@@ -9,12 +9,20 @@ class ScheduleParser:
     FACULTY_DICT = None
 
     def __init__(self, faculty=None, group=None):
+        self.group = None
+        self.faculty = None
         self.session = requests.Session()
         self.FACULTY_DICT = self.get_faculties()
         if faculty is not None and group is not None:
-            self.faculty = next(item for item in self.FACULTY_DICT if item["abbr"].lower() == faculty)['id']
-            GROUP_DICT = self.get_groups(self.faculty)
-            self.group = next(item for item in GROUP_DICT if item['name'] == group)['id']
+            self.set_faculty(faculty)
+            self.set_group(group)
+
+    def set_faculty(self, faculty):
+        self.faculty = next(item for item in self.FACULTY_DICT if item["abbr"].lower() == faculty)['id']
+
+    def set_group(self, group):
+        GROUP_DICT = self.get_groups()
+        self.group = next(item for item in GROUP_DICT if item['name'] == group)['id']
 
     def get_info(self, url):
         soup = BeautifulSoup(self.session.get(url, headers={'Accept-Encoding': 'identity'}).text, 'html.parser')
@@ -30,9 +38,9 @@ class ScheduleParser:
         result = self.get_info(f'https://ruz.spbstu.ru/search/groups?q={group}')
         return result['searchGroup']['data']
 
-    def get_groups(self, faculty):
-        groups = self.get_info(f'https://ruz.spbstu.ru/faculty/{faculty}/groups/')
-        return groups['groups']['data'][str(faculty)]
+    def get_groups(self):
+        groups = self.get_info(f'https://ruz.spbstu.ru/faculty/{self.faculty}/groups/')
+        return groups['groups']['data'][str(self.faculty)]
 
     def get_schedule(self, date=None):
         if date is None:
