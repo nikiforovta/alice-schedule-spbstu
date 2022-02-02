@@ -18,11 +18,11 @@ class ScheduleParser:
             self.set_group(group)
 
     def set_faculty(self, faculty):
-        self.faculty = next(item for item in self.FACULTY_DICT if item["abbr"].lower() == faculty)['id']
+        self.faculty = next((item['id'] for item in self.FACULTY_DICT if item["abbr"].lower() == faculty), None)
 
     def set_group(self, group):
         GROUP_DICT = self.get_groups()
-        self.group = next(item for item in GROUP_DICT if item['name'] == group)['id']
+        self.group = next((item['id'] for item in GROUP_DICT if item['name'] == group), None)
 
     def get_info(self, url):
         soup = BeautifulSoup(self.session.get(url, headers={'Accept-Encoding': 'identity'}).text, 'html.parser')

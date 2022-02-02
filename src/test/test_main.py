@@ -1,6 +1,6 @@
 import json
 
-from src.main import handler
+from src.main import handler, group_recognition
 
 normal_dialog = [
     {
@@ -30,7 +30,8 @@ normal_dialog = [
         "new": False
     },
         "request": {
-            "original_utterance": "3530203/10002"
+            "original_utterance": "3530203/10002",
+            "nlu": {"tokens": "3530203/10002"}
         },
         "state": {
             "application": {'faculty': 'икнт'}
@@ -65,4 +66,16 @@ normal_dialog = [
 def test_handler():
     for request in normal_dialog:
         print(json.loads(handler(request, None)))
+    assert True
+
+
+group_examples = [
+    ["3530901", "80203"], ["з", "3", "5", "3", "0", "9", "0", "1", "дробь", "8", "0", "2", "0", "3"],
+    ["353", "0901", "слеш", "80203"], ["353", "09", "01", "8", "0", "2", "0", "3"], ['ooooo'], ['ooooooooooooo']
+]
+
+
+def test_group_recognition():
+    for g in group_examples:
+        print(group_recognition(g))
     assert True

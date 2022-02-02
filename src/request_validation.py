@@ -25,6 +25,3 @@ class RequestValidator:
             return "группа найдена"
         else:
             return "уточните запрос"
-
-    def validate_teacher(self, teacher):
-        pass
