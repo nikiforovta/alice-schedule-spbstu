@@ -6,19 +6,23 @@ from bs4 import BeautifulSoup
 
 
 class ScheduleParser:
-    FACULTY_DICT = None
+    FACULTY_LIST = {}
+    NAME_ABBR = {}
 
     def __init__(self, faculty=None, group=None):
-        self.group = None
-        self.faculty = None
+        self.faculty = faculty
+        self.group = group
         self.session = requests.Session()
-        self.FACULTY_DICT = self.get_faculties()
+        self.FACULTY_LIST = self.get_faculties()
+        for item in self.FACULTY_LIST:
+            self.NAME_ABBR[item['name'].lower()] = item['abbr'].lower()
         if faculty is not None and group is not None:
             self.set_faculty(faculty)
             self.set_group(group)
 
     def set_faculty(self, faculty):
-        self.faculty = next((item['id'] for item in self.FACULTY_DICT if item["abbr"].lower() == faculty), None)
+        self.faculty = next(
+            (item['id'] for item in self.FACULTY_LIST if faculty in [item["abbr"].lower(), item["name"].lower()]), None)
 
     def set_group(self, group):
         GROUP_DICT = self.get_groups()

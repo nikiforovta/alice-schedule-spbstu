@@ -11,7 +11,8 @@ normal_dialog = [
             "original_utterance": ""
         },
         "state": {
-            "application": {}
+            "user": {'faculty': 'икнт',
+                'group': '3530203/10002'}
         },
         "version": "1.0"
     }
@@ -20,10 +21,11 @@ normal_dialog = [
         "new": False
     },
         "request": {
-            "original_utterance": "икнт"
+            "original_utterance": "институт компьютерных наук и технологий"
         },
         "state": {
-            "application": {'faculty': None}
+            "user": {'faculty': 'икнт',
+                'group': '3530203/10002'}
         },
         "version": "1.0"},
     {"session": {
@@ -34,7 +36,7 @@ normal_dialog = [
             "nlu": {"tokens": "3530203/10002"}
         },
         "state": {
-            "application": {'faculty': 'икнт'}
+            "user": {'faculty': 'институт компьютерных наук и технологий'}
         },
         "version": "1.0"},
     {"session": {
@@ -55,7 +57,7 @@ normal_dialog = [
             "original_utterance": "2022-2-5"
         },
         "state": {
-            "application": {
+            "user": {
                 'faculty': 'икнт',
                 'group': '3530203/10002'}
         },

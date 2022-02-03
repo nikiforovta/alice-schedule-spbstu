@@ -6,7 +6,7 @@ class RequestValidator:
     sp = schedule_parser.ScheduleParser()
 
     def __init__(self):
-        for item in self.sp.FACULTY_DICT:
+        for item in self.sp.FACULTY_LIST:
             self.FACULTIES_LIST.append(item["name"].lower())
             self.FACULTIES_LIST.append(item["abbr"].lower())
 
