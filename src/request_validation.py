@@ -19,9 +19,4 @@ class RequestValidator:
         for group in groups:
             if group['faculty']['name'].lower() == faculty or group['faculty']['abbr'].lower() == faculty:
                 group_match += 1
-        if group_match == 0:
-            return "не знаю такой"
-        if group_match == 1:
-            return "группа найдена"
-        else:
-            return "уточните запрос"
+        return group_match

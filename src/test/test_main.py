@@ -4,41 +4,54 @@ from src.main import handler, group_recognition
 
 normal_dialog = [
     {
+        "meta": {
+            "locale": "ru-RU",
+            "timezone": "UTC",
+            "client_id": "ru.yandex.searchplugin/7.16 (none none; android 4.4.2)",
+            "interfaces": {
+                "screen": {},
+                "payments": {},
+                "account_linking": {}
+            }
+        },
         "session": {
-            "new": True
+            "message_id": 2,
+            "session_id": "97aecec9-7ee8-4327-a47c-6905740e5e61",
+            "skill_id": "b4650c20-82ab-45ad-bd26-d2aae92e40ea",
+            "user": {
+                "user_id": "9412254570D58A0F1F0CF25FEC75B20D09C3B0F3AA4DA94F49557F801C160685"
+            },
+            "application": {
+                "application_id": "4FF410F6BC3708F9CD20BB8BBFAF817038ECF4206969F3FD11836D83F95BD6CE"
+            },
+            "new": False,
+            "user_id": "4FF410F6BC3708F9CD20BB8BBFAF817038ECF4206969F3FD11836D83F95BD6CE"
         },
         "request": {
-            "original_utterance": ""
+            "command": "3530901 / 80203",
+            "original_utterance": "3530901/80203",
+            "nlu": {
+                "tokens": [
+                    "3530901",
+                    "80203"
+                ],
+                "entities": [],
+                "intents": {}
+            },
+            "markup": {
+                "dangerous_context": False
+            },
+            "type": "SimpleUtterance"
         },
         "state": {
-            "user": {'faculty': 'икнт',
-                'group': '3530203/10002'}
+            "session": {},
+            "user": {
+                "faculty": "икнт"
+            },
+            "application": {}
         },
         "version": "1.0"
-    }
-    ,
-    {"session": {
-        "new": False
     },
-        "request": {
-            "original_utterance": "институт компьютерных наук и технологий"
-        },
-        "state": {
-            "user": {'faculty': 'икнт',
-                'group': '3530203/10002'}
-        },
-        "version": "1.0"},
-    {"session": {
-        "new": False
-    },
-        "request": {
-            "original_utterance": "3530203/10002",
-            "nlu": {"tokens": "3530203/10002"}
-        },
-        "state": {
-            "user": {'faculty': 'институт компьютерных наук и технологий'}
-        },
-        "version": "1.0"},
     {"session": {
         "new": False
     },

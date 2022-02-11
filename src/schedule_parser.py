@@ -21,15 +21,21 @@ class ScheduleParser:
             self.set_group(group)
 
     def set_faculty(self, faculty):
-        self.faculty = next(
-            (item['id'] for item in self.FACULTY_LIST if faculty in [item["abbr"].lower(), item["name"].lower()]), None)
+        self.faculty = None
+        for item in self.FACULTY_LIST:
+            if faculty == item['abbr'].lower():
+                self.faculty = item['id']
+                return True
+            elif faculty == item['name'].lower():
+                self.faculty = item['id']
+                return False
 
     def set_group(self, group):
         GROUP_DICT = self.get_groups()
         self.group = next((item['id'] for item in GROUP_DICT if item['name'] == group), None)
 
     def get_info(self, url):
-        soup = BeautifulSoup(self.session.get(url, headers={'Accept-Encoding': 'identity'}).text, 'html.parser')
+        soup = BeautifulSoup(self.session.get(url).text, 'html.parser')
         for script in soup.find_all(string=re.compile('window.__INITIAL_STATE__')):
             return json.loads(script[33:-3])
 
