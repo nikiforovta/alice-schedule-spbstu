@@ -15,7 +15,9 @@ jobs:
       with:
         token: ${{ secrets.TOKEN }}
         function_id: ${{ secrets.FUNCTION_ID }}
-        runtime: 'python37-preview'
+        runtime: 'python37'
         entrypoint: 'main.handler'
         source: '.'
+        memory: '256'
+        environment: ''
 
