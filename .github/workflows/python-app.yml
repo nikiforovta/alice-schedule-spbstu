@@ -1,0 +1,21 @@
+name: Deploy Python application
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@master
+    - uses: goodsmileduck/yandex-serverless-action@v1
+      with:
+        token: ${{ secrets.TOKEN }}
+        function_id: ${{ secrets.FUNCTION_ID }}
+        runtime: 'python37-preview'
+        entrypoint: 'main.handler'
+        source: '.'
+
