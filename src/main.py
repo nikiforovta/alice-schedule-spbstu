@@ -76,15 +76,15 @@ def gather_date(event, response_json, sp):
 
 def save_group(event, response_json):
     for saved_group in response_json['saved_groups'].items():
-        if saved_group['faculty'] == response_json['state']['session']['faculty'] and saved_group['group'] == \
-                response_json['state']['session']['group']:
+        if saved_group['faculty'] == response_json['state']['application']['faculty'] and saved_group['group'] == \
+                response_json['state']['application']['group']:
             output_text = f"Группа {saved_group['group']} уже сохранена"
             output_tts = f"Группа {' '.join(saved_group['group'].split(''))} уже сохранена"
             return output_text, output_tts
     response_json['user_state_update']['saved_groups'].append(
-        [event['state']['session']['faculty'], event['state']['session']['group']])
-    output_text = f"Группа {event['state']['session']['group']} сохранена"
-    output_tts = f"Группа {' '.join(event['state']['session']['group'].split(''))} сохранена"
+        [event['state']['application']['faculty'], event['state']['application']['group']])
+    output_text = f"Группа {event['state']['application']['group']} сохранена"
+    output_tts = f"Группа {' '.join(event['state']['application']['group'].split(''))} сохранена"
     return output_text, output_tts
 
 
@@ -137,7 +137,7 @@ def reset_settings(response_json, sp):
 
 
 def gather_group(event, response_json, faculty, sp, rv):
-    group = event['state']['application_state'].get('group')
+    group = event['state']['application'].get('group')
     answer = event['request']['original_utterance'].lower()
     if group:
         sp.set_group(group)
@@ -187,7 +187,7 @@ def gather_info(event, response_json):
             return "Навык позволяет узнать расписание выбранной группы в Санкт-Петербургском Политехническом " \
                    "университете Петра Великого", "Навык позволяет узнать расписание выбранной группы в " \
                                                   "Санкт-Петербургском Политехническом университете Петра Великого "
-    if event['state']['user'].get(['intent_remove']):
+    if event['state']['user'].get('intent_remove'):
         (output_text, output_tts) = remove_group(event, response_json, answer)
         response_json['user_state_update']['intent_remove'] = False
     elif "сброс" in answer:
@@ -214,6 +214,9 @@ def gather_info(event, response_json):
             answer.lower()]
         output_text = "И номер группы."
         output_tts = "И номер группы."
+    elif answer == "":
+        output_text = ""
+        output_tts = ""
     else:
         output_text = "Ой, я такой институт не знаю, попробуйте еще раз."
         output_tts = "Ой, я такой институт не знаю, попробуйте еще раз."
