@@ -1,4 +1,4 @@
-from src.datetime_operations import translate_datetime
+from ..datetime_operations import translate_datetime
 
 relative_datetime_examples = [{
     "type": "YANDEX.DATETIME",

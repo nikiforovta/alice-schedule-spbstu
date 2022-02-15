@@ -1,4 +1,4 @@
-from . import schedule_parser
+import schedule_parser
 
 
 class RequestValidator:

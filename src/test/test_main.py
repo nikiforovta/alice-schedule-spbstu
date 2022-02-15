@@ -1,6 +1,6 @@
 import json
 
-from src.main import handler, group_recognition
+from .. import main
 
 normal_dialog = [
     {
@@ -80,7 +80,7 @@ normal_dialog = [
 
 def test_handler():
     for request in normal_dialog:
-        print(json.loads(handler(request, None)))
+        print(json.loads(main.handler(request, None)))
     assert True
 
 
@@ -92,5 +92,5 @@ group_examples = [
 
 def test_group_recognition():
     for g in group_examples:
-        print(group_recognition(g))
+        print(main.group_recognition(g))
     assert True

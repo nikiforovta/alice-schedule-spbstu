@@ -1,9 +1,10 @@
 import json
 import random
 
-from . import request_validation, datetime_operations
-from . import schedule_parser
-from . import schedule_to_speech
+import datetime_operations
+import request_validation
+import schedule_parser
+import schedule_to_speech
 
 
 def group_recognition(tokens):
