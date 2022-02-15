@@ -39,7 +39,8 @@ def generate_response(event):
             'text': '',
             'tts': ''
         },
-        'user_state_update': {}
+        'user_state_update': {},
+        'application_state': {}
     }
 
 
@@ -106,11 +107,12 @@ def list_groups(event, tip=None):
     return output_text, output_tts
 
 
-def remove_group(event, index):
+def remove_group(event, response_json, index):
     _, g = event['state']['user']['saved_groups'][index - 1]
     output_text = f"Группа {g} удалена"
     output_tts = f"Группа {' '.join(g.split(''))} удалена"
     del event['state']['user']['saved_groups'][index - 1]
+    response_json['user_state_update']['saved_groups'] = event['state']['user']['saved_groups']
     return output_text, output_tts
 
 
@@ -135,7 +137,7 @@ def reset_settings(response_json, sp):
 
 
 def gather_group(event, response_json, faculty, sp, rv):
-    group = event['state']['user'].get('group')
+    group = event['state']['application_state'].get('group')
     answer = event['request']['original_utterance'].lower()
     if group:
         sp.set_group(group)
@@ -158,7 +160,7 @@ def gather_group(event, response_json, faculty, sp, rv):
             output_tts = "Ой, я не знаю такой группы, попробуйте еще раз."
         elif group_search == 1:
             sp.set_group(possible_group)
-            response_json['user_state_update']['group'] = possible_group
+            response_json['application_state']['group'] = possible_group
             (output_text, output_tts) = schedule_to_speech.translate(sp.get_schedule())
         else:
             output_text = "Пожалуйста, уточните номер группы."
@@ -171,8 +173,8 @@ HELP_WORDS_LIST = ["помощь", "что ты умеешь", "как поль�
 
 
 def gather_info(event, response_json):
-    faculty = event['state']['user'].get('faculty')
-    group = event['state']['user'].get('group')
+    faculty = event['state']['application'].get('faculty')
+    group = event['state']['application'].get('group')
     sp = schedule_parser.ScheduleParser(faculty, group)
     rv = request_validation.RequestValidator()
     answer = event['request']['original_utterance'].lower()
@@ -185,8 +187,8 @@ def gather_info(event, response_json):
             return "Навык позволяет узнать расписание выбранной группы в Санкт-Петербургском Политехническом " \
                    "университете Петра Великого", "Навык позволяет узнать расписание выбранной группы в " \
                                                   "Санкт-Петербургском Политехническом университете Петра Великого "
-    if event['state']['user']['intent_remove']:
-        (output_text, output_tts) = remove_group(event, answer)
+    if event['state']['user'].get(['intent_remove']):
+        (output_text, output_tts) = remove_group(event, response_json, answer)
         response_json['user_state_update']['intent_remove'] = False
     elif "сброс" in answer:
         (output_text, output_tts) = reset_settings(response_json, sp)
@@ -194,22 +196,22 @@ def gather_info(event, response_json):
         sp.set_faculty(faculty)
         if answer == 'смена группы':
             sp.set_group(None)
-            response_json['user_state_update']['group'] = None
+            response_json['application_state']['group'] = None
             output_text = "Назовите номер группы."
             output_tts = "Назовите номер группы."
         elif answer == 'смена института':
             sp.set_faculty(None)
             sp.set_group(None)
-            response_json['user_state_update']['faculty'] = None
-            response_json['user_state_update']['group'] = None
+            response_json['application_state']['faculty'] = None
+            response_json['application_state']['group'] = None
             output_text = "Назовите институт."
             output_tts = "Назовите институт."
         else:
             (output_text, output_tts) = gather_group(event, response_json, faculty, sp, rv)
     elif rv.validate_faculty(answer):
         sp.set_faculty(answer)
-        response_json['user_state_update']['faculty'] = answer if sp.set_faculty(answer) else sp.NAME_ABBR[
-            answer.lower()]  # добавляем только аббревиатуры, чтобы привести хранимые данные к единому виду
+        response_json['application_state']['faculty'] = answer if sp.set_faculty(answer) else sp.NAME_ABBR[
+            answer.lower()]
         output_text = "И номер группы."
         output_tts = "И номер группы."
     else:
@@ -219,8 +221,8 @@ def gather_info(event, response_json):
 
 
 def handler(event, context):
-    faculty = event['state']['user'].get('faculty')
-    group = event['state']['user'].get('group')
+    faculty = event['state']['application'].get('faculty')
+    group = event['state']['application'].get('group')
     response_json = generate_response(event)
     if event['session']['new']:
         (response_json['response']['text'], response_json['response']['tts']) = greeting(faculty, group)
