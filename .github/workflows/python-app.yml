@@ -15,7 +15,7 @@ jobs:
         function_id: ${{ secrets.FUNCTION_ID }}
         runtime: 'python37'
         entrypoint: 'main.handler'
-        source: '.'
+        source: './src'
         memory: '256'
         environment: DEBUG=True
 
