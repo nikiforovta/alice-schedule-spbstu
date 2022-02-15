@@ -17,5 +17,5 @@ jobs:
         entrypoint: 'main.handler'
         source: '.'
         memory: '256'
-        environment: DEBUF=True
+        environment: DEBUG=True
 
