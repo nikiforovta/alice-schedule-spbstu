@@ -32,7 +32,7 @@ class ScheduleParser:
 
     def set_group(self, group):
         GROUP_DICT = self.get_groups()
-        self.group = next((item['id'] for item in GROUP_DICT if item['name'] == group), None)
+        self.group = next((item['id'] for item in GROUP_DICT if item['name'] == group), None) if GROUP_DICT else None
 
     def get_info(self, url):
         soup = BeautifulSoup(self.session.get(url).text, 'html.parser')
@@ -49,8 +49,10 @@ class ScheduleParser:
         return result['searchGroup']['data']
 
     def get_groups(self):
-        groups = self.get_info(f'https://ruz.spbstu.ru/faculty/{self.faculty}/groups/')
-        return groups['groups']['data'][str(self.faculty)]
+        if self.faculty:
+            groups = self.get_info(f'https://ruz.spbstu.ru/faculty/{self.faculty}/groups/')
+            return groups['groups']['data'][str(self.faculty)]
+        return None
 
     def get_schedule(self, date=None):
         if date is None:

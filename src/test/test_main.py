@@ -15,7 +15,7 @@ normal_dialog = [
             "timezone": "UTC"
         },
         "request": {
-            "original_utterance": "",
+            "original_utterance": "сброс",
             "command": "",
             "nlu": {
                 "entities": [],
