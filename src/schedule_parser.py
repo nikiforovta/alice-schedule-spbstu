@@ -35,9 +35,9 @@ class ScheduleParser:
         self.group = next((item['id'] for item in GROUP_DICT if item['name'] == group), None) if GROUP_DICT else None
 
     def get_info(self, url):
-        soup = BeautifulSoup(self.session.get(url).text, 'html.parser')
-        for script in soup.find_all(string=re.compile('window.__INITIAL_STATE__')):
-            return json.loads(script[33:-3])
+        soup = BeautifulSoup(self.session.get(url).text, 'lxml')
+        for script in soup.select('body > script:nth-child(3)'):
+            return json.loads(script.text[32:-3])
 
     def get_faculties(self):
         faculties = self.get_info(f'https://ruz.spbstu.ru/')

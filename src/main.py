@@ -125,10 +125,13 @@ def remove_group_options(event, response_json):
     return output_text, output_tts
 
 
-def reset_settings(response_json, sp):
+def reset_settings(event, response_json, sp):
     response_json['session_state'] = None
-    response_json['user_state_update'] = None
-    response_json['application_state'] = None
+    user_settings = event['state'].get('user')
+    if user_settings:
+        for k in user_settings.keys():
+            response_json['user_state_update'][k] = None
+    response_json['application_state'] = {}
     sp.set_faculty(None)
     sp.set_group(None)
     output_text = "Все настройки сброшены. Назовите институт"
@@ -160,6 +163,7 @@ def gather_group(event, response_json, faculty, sp, rv):
             output_tts = "Ой, я не знаю такой группы, попробуйте еще раз."
         elif group_search == 1:
             sp.set_group(possible_group)
+            response_json['application_state']['faculty'] = faculty
             response_json['application_state']['group'] = possible_group
             (output_text, output_tts) = schedule_to_speech.translate(sp.get_schedule())
         else:
@@ -191,7 +195,7 @@ def gather_info(event, response_json):
         (output_text, output_tts) = remove_group(event, response_json, answer)
         response_json['user_state_update']['intent_remove'] = False
     elif "сброс" in answer:
-        (output_text, output_tts) = reset_settings(response_json, sp)
+        (output_text, output_tts) = reset_settings(event, response_json, sp)
     elif faculty:
         sp.set_faculty(faculty)
         if answer == 'смена группы':
