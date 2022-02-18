@@ -77,14 +77,14 @@ def gather_date(event, response_json, sp):
 def save_group(event, response_json):
     saved_groups = event['state']['user'].get('saved_groups')
     if saved_groups:
-        for saved_group in saved_groups.items():
+        for saved_group in saved_groups:
             if saved_group['faculty'] == response_json['state']['application']['faculty'] and saved_group['group'] == \
                     response_json['state']['application']['group']:
                 output_text = f"Группа {saved_group['group']} уже сохранена"
                 output_tts = f"Группа {' '.join(saved_group['group'])} уже сохранена"
                 return output_text, output_tts
         response_json['user_state_update']['saved_groups'].append(
-            [event['state']['application']['faculty'], event['state']['application']['group']])
+            {"faculty": event['state']['application']['faculty'], "group": event['state']['application']['group']})
     else:
         response_json['user_state_update']['saved_groups'] = [
             {'faculty': event['state']['application']['faculty'], 'group': event['state']['application']['group']}]
@@ -101,7 +101,7 @@ def list_groups(event, tip=None):
         if len(saved_groups) > 0:
             output_text = "На данный момент сохранены следующие группы:\n"
             output_tts = output_text
-            for i, saved_group in enumerate(event['state']['user']['saved_groups'].items()):
+            for i, saved_group in enumerate(event['state']['user']['saved_groups']):
                 output_text += f"Номер {i + 1}: {saved_group['group']} (институт {saved_group['faculty']})\n"
                 output_tts += f"Номер {i + 1}: {' '.join(saved_group['group'])} " \
                               f"(институт {' '.join(saved_group['faculty'])})\n "
@@ -197,6 +197,7 @@ def gather_info(event, response_json, faculty, group):
                                                                                  "Политехническом университете Петра " \
                                                                                  "Великого"
     elif event['state']['user'].get('intent_remove'):
+        index = event['request']['nlu']['entities'][0]['value']
         (output_text, output_tts) = remove_group(event, response_json, answer)
         response_json['user_state_update']['intent_remove'] = False
     elif "сброс" in answer:
