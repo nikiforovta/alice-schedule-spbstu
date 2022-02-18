@@ -112,8 +112,8 @@ def list_groups(event, tip=None):
     return output_text, output_tts
 
 
-def remove_group(event, response_json, index):
-    _, g = event['state']['user']['saved_groups'][index - 1]
+def remove_group(event, response_json, index: int):
+    _, g = event['state']['user']['saved_groups'][index - 1].values()
     output_text = f"Группа {g} удалена"
     output_tts = f"Группа {' '.join(g)} удалена"
     del event['state']['user']['saved_groups'][index - 1]
@@ -197,8 +197,14 @@ def gather_info(event, response_json, faculty, group):
                                                                                  "Политехническом университете Петра " \
                                                                                  "Великого"
     elif event['state']['user'].get('intent_remove'):
-        index = event['request']['nlu']['entities'][0]['value']
-        (output_text, output_tts) = remove_group(event, response_json, answer)
+        possible_index = event['request']['nlu']['entities']
+        index = -1
+        for pi in possible_index:
+            if pi['type'] == "YANDEX.NUMBER":
+                index = int(pi['value'])
+                break
+        if index != -1:
+            (output_text, output_tts) = remove_group(event, response_json, index)
         response_json['user_state_update']['intent_remove'] = False
     elif "сброс" in answer:
         (output_text, output_tts) = reset_settings(event, response_json, sp)
