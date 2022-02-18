@@ -83,8 +83,9 @@ def save_group(event, response_json):
                 output_text = f"Группа {saved_group['group']} уже сохранена"
                 output_tts = f"Группа {' '.join(saved_group['group'])} уже сохранена"
                 return output_text, output_tts
-        response_json['user_state_update']['saved_groups'].append(
+        saved_groups.append(
             {"faculty": event['state']['application']['faculty'], "group": event['state']['application']['group']})
+        response_json['user_state_update']['saved_groups'] = saved_groups
     else:
         response_json['user_state_update']['saved_groups'] = [
             {'faculty': event['state']['application']['faculty'], 'group': event['state']['application']['group']}]
