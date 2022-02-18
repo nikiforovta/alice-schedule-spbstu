@@ -15,8 +15,6 @@ class RequestValidator:
 
     def validate_group(self, faculty, group):
         groups = self.sp.find_groups(group)
-        group_match = 0
-        for group in groups:
-            if group['faculty']['name'].lower() == faculty or group['faculty']['abbr'].lower() == faculty:
-                group_match += 1
+        group_match = sum(1 for group in groups if group['faculty']['name'].lower() == faculty
+                          or group["faculty"]['abbr'].lower() == faculty)
         return group_match

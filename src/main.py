@@ -81,15 +81,15 @@ def save_group(event, response_json):
             if saved_group['faculty'] == response_json['state']['application']['faculty'] and saved_group['group'] == \
                     response_json['state']['application']['group']:
                 output_text = f"Группа {saved_group['group']} уже сохранена"
-                output_tts = f"Группа {' '.join(saved_group['group'].split(''))} уже сохранена"
+                output_tts = f"Группа {' '.join(saved_group['group'])} уже сохранена"
                 return output_text, output_tts
         response_json['user_state_update']['saved_groups'].append(
             [event['state']['application']['faculty'], event['state']['application']['group']])
     else:
-        response_json['user_state_update']['saved_groups'] = [event['state']['application']['faculty'],
-                                                              event['state']['application']['group']]
+        response_json['user_state_update']['saved_groups'] = [
+            {'faculty': event['state']['application']['faculty'], 'group': event['state']['application']['group']}]
     output_text = f"Группа {event['state']['application']['group']} сохранена"
-    output_tts = f"Группа {' '.join(event['state']['application']['group'].split(''))} сохранена"
+    output_tts = f"Группа {' '.join(event['state']['application']['group'])} сохранена"
     return output_text, output_tts
 
 
@@ -103,8 +103,8 @@ def list_groups(event, tip=None):
             output_tts = output_text
             for i, saved_group in enumerate(event['state']['user']['saved_groups'].items()):
                 output_text += f"Номер {i + 1}: {saved_group['group']} (институт {saved_group['faculty']})\n"
-                output_tts += f"Номер {i + 1}: {' '.join(saved_group['group'].split(' '))} " \
-                              f"(институт {saved_group['faculty']})\n "
+                output_tts += f"Номер {i + 1}: {' '.join(saved_group['group'])} " \
+                              f"(институт {' '.join(saved_group['faculty'])})\n "
             if tip:
                 random_tip = random.choice(schedule_to_speech.TIPS_LIST)
                 output_text += random_tip
@@ -115,7 +115,7 @@ def list_groups(event, tip=None):
 def remove_group(event, response_json, index):
     _, g = event['state']['user']['saved_groups'][index - 1]
     output_text = f"Группа {g} удалена"
-    output_tts = f"Группа {' '.join(g.split(''))} удалена"
+    output_tts = f"Группа {' '.join(g)} удалена"
     del event['state']['user']['saved_groups'][index - 1]
     response_json['user_state_update']['saved_groups'] = event['state']['user']['saved_groups']
     return output_text, output_tts
@@ -125,8 +125,8 @@ def remove_group_options(event, response_json):
     (output_text, output_tts) = list_groups(event)
     if len(event['state']['user']['saved_groups']) > 0:
         response_json['user_state_update']['intent_remove'] = True
-        output_text += "Выберите номер группы для удаления."
-        output_tts += "Выберите номер группы для удаления."
+        output_text += "\nВыберите номер группы для удаления."
+        output_tts += "\nВыберите номер группы для удаления."
     return output_text, output_tts
 
 

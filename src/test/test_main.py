@@ -105,7 +105,7 @@ normal_dialog = [
                     "end": 1
                 },
                 "value": {
-                    "day": -1,
+                    "day": 2,
                     "day_is_relative": True
                 }
             }]},
