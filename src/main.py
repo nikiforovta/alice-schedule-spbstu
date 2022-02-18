@@ -78,8 +78,8 @@ def save_group(event, response_json):
     saved_groups = event['state']['user'].get('saved_groups')
     if saved_groups:
         for saved_group in saved_groups:
-            if saved_group['faculty'] == response_json['state']['application']['faculty'] and saved_group['group'] == \
-                    response_json['state']['application']['group']:
+            if saved_group['faculty'] == event['state']['application']['faculty'] and saved_group['group'] == \
+                    event['state']['application']['group']:
                 output_text = f"Группа {saved_group['group']} уже сохранена"
                 output_tts = f"Группа {' '.join(saved_group['group'])} уже сохранена"
                 return output_text, output_tts
