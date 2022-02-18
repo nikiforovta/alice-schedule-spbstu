@@ -75,35 +75,40 @@ def gather_date(event, response_json, sp):
 
 
 def save_group(event, response_json):
-    for saved_group in response_json['saved_groups'].items():
-        if saved_group['faculty'] == response_json['state']['application']['faculty'] and saved_group['group'] == \
-                response_json['state']['application']['group']:
-            output_text = f"Группа {saved_group['group']} уже сохранена"
-            output_tts = f"Группа {' '.join(saved_group['group'].split(''))} уже сохранена"
-            return output_text, output_tts
-    response_json['user_state_update']['saved_groups'].append(
-        [event['state']['application']['faculty'], event['state']['application']['group']])
+    saved_groups = event['state']['user'].get('saved_groups')
+    if saved_groups:
+        for saved_group in saved_groups.items():
+            if saved_group['faculty'] == response_json['state']['application']['faculty'] and saved_group['group'] == \
+                    response_json['state']['application']['group']:
+                output_text = f"Группа {saved_group['group']} уже сохранена"
+                output_tts = f"Группа {' '.join(saved_group['group'].split(''))} уже сохранена"
+                return output_text, output_tts
+        response_json['user_state_update']['saved_groups'].append(
+            [event['state']['application']['faculty'], event['state']['application']['group']])
+    else:
+        response_json['user_state_update']['saved_groups'] = [event['state']['application']['faculty'],
+                                                              event['state']['application']['group']]
     output_text = f"Группа {event['state']['application']['group']} сохранена"
     output_tts = f"Группа {' '.join(event['state']['application']['group'].split(''))} сохранена"
     return output_text, output_tts
 
 
 def list_groups(event, tip=None):
-    if len(event['state']['user']['saved_groups']) == 0:
-        output_text = "Пока вы не сохранили ни одну группу. Чтобы сохранить группу, выберите её и скажите \"Сохрани " \
-                      "группу\""
-        output_tts = output_text
-    else:
-        output_text = "На данный момент сохранены следующие группы:\n"
-        output_tts = output_text
-        for i, saved_group in enumerate(event['state']['user']['saved_groups'].items()):
-            output_text = f"Номер {i + 1}: {saved_group['group']} (институт {saved_group['faculty']})\n"
-            output_tts = f"Номер {i + 1}: {' '.join(saved_group['group'].split(' '))} " \
-                         f"(институт {saved_group['faculty']})\n "
-        if tip:
-            random_tip = random.choice(schedule_to_speech.TIPS_LIST)
-            output_text += random_tip
-            output_tts += random_tip
+    saved_groups = event['state']['user'].get('saved_groups')
+    output_text = 'Пока вы не сохранили ни одну группу. Чтобы сохранить группу, выберите её и скажите "Сохрани группу"'
+    output_tts = output_text
+    if saved_groups:
+        if len(saved_groups) > 0:
+            output_text = "На данный момент сохранены следующие группы:\n"
+            output_tts = output_text
+            for i, saved_group in enumerate(event['state']['user']['saved_groups'].items()):
+                output_text += f"Номер {i + 1}: {saved_group['group']} (институт {saved_group['faculty']})\n"
+                output_tts += f"Номер {i + 1}: {' '.join(saved_group['group'].split(' '))} " \
+                              f"(институт {saved_group['faculty']})\n "
+            if tip:
+                random_tip = random.choice(schedule_to_speech.TIPS_LIST)
+                output_text += random_tip
+                output_tts += random_tip
     return output_text, output_tts
 
 
@@ -143,6 +148,7 @@ def gather_group(event, response_json, faculty, sp, rv):
     group = event['state']['application'].get('group')
     answer = event['request']['original_utterance'].lower()
     if group:
+        response_json['application_state']['group'] = group
         sp.set_group(group)
         if event['session']['new']:
             (output_text, output_tts) = schedule_to_speech.translate(sp.get_schedule())
@@ -163,7 +169,6 @@ def gather_group(event, response_json, faculty, sp, rv):
             output_tts = "Ой, я не знаю такой группы, попробуйте еще раз."
         elif group_search == 1:
             sp.set_group(possible_group)
-            response_json['application_state']['faculty'] = faculty
             response_json['application_state']['group'] = possible_group
             (output_text, output_tts) = schedule_to_speech.translate(sp.get_schedule())
         else:
@@ -174,29 +179,30 @@ def gather_group(event, response_json, faculty, sp, rv):
 
 STOP_WORDS_LIST = ["хватит", "стоп", "прекрати", "остановись"]
 HELP_WORDS_LIST = ["помощь", "что ты умеешь", "как пользоваться"]
+RESET_WORDS_LIST = ['сброс', 'сбрось']
 
 
-def gather_info(event, response_json):
-    faculty = event['state']['application'].get('faculty')
-    group = event['state']['application'].get('group')
+def gather_info(event, response_json, faculty, group):
     sp = schedule_parser.ScheduleParser(faculty, group)
     rv = request_validation.RequestValidator()
     answer = event['request']['original_utterance'].lower()
-    for stop_word in STOP_WORDS_LIST:
-        if stop_word in answer:
-            response_json['response']['end_session'] = True
-            return "Выключаюсь", "Выключаюсь"
-    for help_word in HELP_WORDS_LIST:
-        if help_word in answer:
-            return "Навык позволяет узнать расписание выбранной группы в Санкт-Петербургском Политехническом " \
-                   "университете Петра Великого", "Навык позволяет узнать расписание выбранной группы в " \
-                                                  "Санкт-Петербургском Политехническом университете Петра Великого "
-    if event['state']['user'].get('intent_remove'):
+    if any([stop_word in answer for stop_word in STOP_WORDS_LIST]):
+        response_json['response']['end_session'] = True
+        output_text, output_tts = "Выключаюсь", "Выключаюсь"
+    elif any([help_word in answer for help_word in HELP_WORDS_LIST]):
+        output_text, output_tts = "Навык позволяет узнать расписание выбранной группы в Санкт-Петербургском " \
+                                  "Политехническом университете Петра Великого", "Навык позволяет узнать расписание " \
+                                                                                 "выбранной группы в " \
+                                                                                 "Санкт-Петербургском " \
+                                                                                 "Политехническом университете Петра " \
+                                                                                 "Великого"
+    elif event['state']['user'].get('intent_remove'):
         (output_text, output_tts) = remove_group(event, response_json, answer)
         response_json['user_state_update']['intent_remove'] = False
     elif "сброс" in answer:
         (output_text, output_tts) = reset_settings(event, response_json, sp)
     elif faculty:
+        response_json['application_state']['faculty'] = faculty
         sp.set_faculty(faculty)
         if answer == 'смена группы':
             sp.set_group(None)
@@ -233,7 +239,7 @@ def handler(event, context):
     response_json = generate_response(event)
     if event['session']['new']:
         (response_json['response']['text'], response_json['response']['tts']) = greeting(faculty, group)
-    output_text, output_tts = gather_info(event, response_json)
+    output_text, output_tts = gather_info(event, response_json, faculty, group)
     response_json['response']['text'] += output_text
     response_json['response']['tts'] += output_tts
     return json.dumps(response_json)

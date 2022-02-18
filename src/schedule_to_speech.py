@@ -73,15 +73,16 @@ def translate(schedule, date=datetime.datetime.now().strftime("%Y-%m-%d")):
     tts = ""
     day = next((item for item in schedule if item["date"] == date), None)
     if day is None:
-        if date == datetime.datetime.now().strftime("%Y-%m-%d"):
+        today = datetime.datetime.now().strftime("%Y-%m-%d")
+        if date == today:
             text += "Сегодня нет пар.\n"
             tts += "Сегодня нет пар.\n"
-        elif date < datetime.datetime.now().strftime("%Y-%m-%d"):
+        elif date < today:
             text += "В этот день не было пар.\n"
             tts += "В этот день не было пар.\n"
         else:
-            text += "В этот день нет пар.\n"
-            tts += "В этот день нет пар.\n"
+            text += "В этот день не будет пар.\n"
+            tts += "В этот день не будет пар.\n"
 
     else:
         (day_text, day_tts) = translate_day(day)
