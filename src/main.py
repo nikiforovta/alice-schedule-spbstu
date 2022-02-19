@@ -30,6 +30,17 @@ def group_recognition(tokens):
     return group
 
 
+def date_buttons(response_json):
+    response_json['response']['buttons'].append({"title": "Вчера", "hide": True})
+    response_json['response']['buttons'].append({"title": "Сегодня", "hide": True})
+    response_json['response']['buttons'].append({"title": "Завтра", "hide": True})
+
+
+def faculty_buttons(sp, response_json):
+    for abbr in sp.NAME_ABBR.values():
+        response_json['response']['buttons'].append({"title": abbr, "hide": True})
+
+
 def generate_response(event):
     return {
         'version': event['version'],
@@ -72,9 +83,7 @@ def gather_date(event, response_json, sp):
     else:
         output_text = "Некорректная дата, попробуйте еще раз."
         output_tts = "Некорректная дата, попробуйте еще раз."
-    response_json['response']['buttons'].append({"title": "Вчера"})
-    response_json['response']['buttons'].append({"title": "Сегодня"})
-    response_json['response']['buttons'].append({"title": "Завтра"})
+    date_buttons(response_json)
     return output_text, output_tts
 
 
@@ -133,7 +142,7 @@ def remove_group_options(event, response_json):
         output_text += "\nВыберите номер группы для удаления."
         output_tts += "\nВыберите номер группы для удаления."
         for i in range(len(event['state']['user']['saved_groups'])):
-            response_json['response']['buttons'].append({'title': str(i + 1)})
+            response_json['response']['buttons'].append({'title': str(i + 1), "hide": True})
     return output_text, output_tts
 
 
@@ -148,8 +157,7 @@ def reset_settings(event, response_json, sp):
     sp.set_group(None)
     output_text = "Все настройки сброшены. Назовите институт"
     output_tts = "Все настройки сброшены. Назовите институт"
-    for _, a in sp.NAME_ABBR.items():
-        response_json['response']['buttons'].append({"title": a})
+
     return output_text, output_tts
 
 
@@ -230,8 +238,7 @@ def gather_info(event, response_json, faculty, group, sp):
             response_json['application_state']['group'] = None
             output_text = "Назовите институт."
             output_tts = "Назовите институт."
-            for _, a in sp.NAME_ABBR.items():
-                response_json['response']['buttons'].append({"title": a})
+            faculty_buttons(sp, response_json)
         else:
             (output_text, output_tts) = gather_group(event, response_json, faculty, group, sp, rv)
     elif rv.validate_faculty(answer):
@@ -243,9 +250,11 @@ def gather_info(event, response_json, faculty, group, sp):
     elif answer == "":
         output_text = ""
         output_tts = ""
+        faculty_buttons(sp, response_json)
     else:
         output_text = "Ой, я такой институт не знаю, попробуйте еще раз."
         output_tts = "Ой, я такой институт не знаю, попробуйте еще раз."
+        faculty_buttons(sp, response_json)
     return output_text, output_tts
 
 
@@ -259,8 +268,7 @@ def handler(event, context):
     if event['session']['new']:
         (response_json['response']['text'], response_json['response']['tts']) = greeting(faculty, group)
     if not faculty:
-        for _, a in sp.NAME_ABBR.items():
-            response_json['response']['buttons'].append({"title": a})
+        faculty_buttons(sp, faculty)
     output_text, output_tts = gather_info(event, response_json, faculty, group, sp)
     response_json['response']['text'] += output_text
     response_json['response']['tts'] += output_tts
