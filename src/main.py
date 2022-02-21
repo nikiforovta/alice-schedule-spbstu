@@ -38,7 +38,7 @@ def date_buttons(response_json):
 
 def faculty_buttons(sp, response_json):
     for abbr in sp.NAME_ABBR.values():
-        response_json['response']['buttons'].append({"title": abbr, "hide": True})
+        response_json['response']['buttons'].append({"title": sp.ABBR_CONVERSION[abbr], "hide": True})
 
 
 def generate_response(event):
@@ -243,8 +243,8 @@ def gather_info(event, response_json, faculty, group, sp):
             (output_text, output_tts) = gather_group(event, response_json, faculty, group, sp, rv)
     elif rv.validate_faculty(answer):
         sp.set_faculty(answer)
-        response_json['application_state']['faculty'] = answer if sp.set_faculty(answer) else sp.NAME_ABBR[
-            answer.lower()]
+        response_json['application_state']['faculty'] = sp.ABBR_CONVERSION[answer] if sp.set_faculty(answer) else \
+            sp.ABBR_CONVERSION[sp.NAME_ABBR[answer.lower()]]
         output_text = "И номер группы."
         output_tts = "И номер группы."
     elif answer == "":
@@ -268,7 +268,7 @@ def handler(event, context):
     if event['session']['new']:
         (response_json['response']['text'], response_json['response']['tts']) = greeting(faculty, group)
     if not faculty:
-        faculty_buttons(sp, faculty)
+        faculty_buttons(sp, response_json)
     output_text, output_tts = gather_info(event, response_json, faculty, group, sp)
     response_json['response']['text'] += output_text
     response_json['response']['tts'] += output_tts

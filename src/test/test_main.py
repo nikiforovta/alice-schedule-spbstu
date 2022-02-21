@@ -165,6 +165,43 @@ normal_dialog = [
             }
         },
         "version": "1.0"
+    },
+    {
+
+        "session": {
+            "new": True,
+
+        },
+        "request": {
+            "command": "",
+            "original_utterance": "",
+            "nlu": {
+                "tokens": [],
+                "entities": [],
+                "intents": {}
+            },
+            "markup": {
+                "dangerous_context": False
+            },
+            "type": "SimpleUtterance"
+        },
+        "state": {
+            "session": {},
+            "user": {
+                "saved_groups": [
+                    {
+                        "faculty": "икнт",
+                        "group": "3530901/80203"
+                    }
+                ],
+                "intent_remove": False
+            },
+            "application": {
+                "group": None,
+                "faculty": None
+            }
+        },
+        "version": "1.0"
     }
 ]
 

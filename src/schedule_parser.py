@@ -1,13 +1,13 @@
 import json
-import re
 
 import requests
 from bs4 import BeautifulSoup
 
 
 class ScheduleParser:
-    FACULTY_LIST = {}
+    FACULTY_LIST = []
     NAME_ABBR = {}
+    ABBR_CONVERSION = {}
 
     def __init__(self, faculty=None, group=None):
         self.faculty = faculty
@@ -16,6 +16,7 @@ class ScheduleParser:
         self.FACULTY_LIST = self.get_faculties()
         for item in self.FACULTY_LIST:
             self.NAME_ABBR[item['name'].lower()] = item['abbr'].lower()
+            self.ABBR_CONVERSION[item['abbr'].lower()] = item['abbr']
         if faculty is not None and group is not None:
             self.set_faculty(faculty)
             self.set_group(group)
@@ -40,7 +41,7 @@ class ScheduleParser:
             return json.loads(script.text[32:-3])
 
     def get_faculties(self):
-        faculties = self.get_info(f'https://ruz.spbstu.ru/')
+        faculties = self.get_info('https://ruz.spbstu.ru/')
         return faculties['faculties']['data']
 
     def find_groups(self, group):
