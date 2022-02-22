@@ -10,16 +10,15 @@ class ScheduleParser:
     ABBR_CONVERSION = {}
 
     def __init__(self, faculty=None, group=None):
-        self.faculty = faculty
-        self.group = group
+        self.faculty = None
+        self.group = None
         self.session = requests.Session()
         self.FACULTY_LIST = self.get_faculties()
         for item in self.FACULTY_LIST:
             self.NAME_ABBR[item['name'].lower()] = item['abbr'].lower()
             self.ABBR_CONVERSION[item['abbr'].lower()] = item['abbr']
-        if faculty is not None and group is not None:
-            self.set_faculty(faculty)
-            self.set_group(group)
+        self.set_faculty(faculty)
+        self.set_group(group)
 
     def set_faculty(self, faculty):
         for item in self.FACULTY_LIST:

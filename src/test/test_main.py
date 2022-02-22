@@ -286,6 +286,36 @@ normal_dialog = [
             }
         },
         "version": "1.0"
+    },
+    {
+
+        "session": {
+            "new": True
+        },
+        "request": {
+            "command": "сброс",
+            "original_utterance": "сброс",
+            "nlu": {
+                "tokens": [
+                    "сброс"
+                ],
+                "entities": [],
+                "intents": {}
+            },
+            "markup": {
+                "dangerous_context": False
+            },
+            "type": "SimpleUtterance"
+        },
+        "state": {
+            "session": {},
+            "user": {},
+            "application": {
+                "group": None,
+                "faculty": "ИКНТ"
+            }
+        },
+        "version": "1.0"
     }
 ]
 
