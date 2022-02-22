@@ -35,7 +35,7 @@ normal_dialog = [
             "new": False,
         },
         "request": {
-            "command": "икнт",
+            "command": "ИКНТ",
             "original_utterance": "3530901/80203",
             "nlu": {
                 "tokens": [
@@ -53,7 +53,7 @@ normal_dialog = [
         "state": {
             "session": {},
             "user": {},
-            "application": {"faculty": "икнт"}
+            "application": {"faculty": "ИКНТ"}
         },
         "version": "1.0"
     },
@@ -77,7 +77,7 @@ normal_dialog = [
         "state": {
             "user": {},
             "application": {
-                'faculty': 'икнт',
+                'faculty': 'ИКНТ',
                 'group': '3530901/80203'}
         },
         "version": "1.0"},
@@ -115,14 +115,14 @@ normal_dialog = [
             "user": {
                 "saved_groups": [
                     {
-                        "faculty": "икнт",
+                        "faculty": "ИКНТ",
                         "group": "3530901/80203"
                     }
                 ],
                 "intent_remove": True
             },
             "application": {
-                "faculty": "икнт",
+                "faculty": "ИКНТ",
                 "group": "3530901/80203"
             }
         },
@@ -153,14 +153,14 @@ normal_dialog = [
             "user": {
                 "saved_groups": [
                     {
-                        "faculty": "икнт",
+                        "faculty": "ИКНТ",
                         "group": "3530901/80203"
                     }
                 ],
                 "intent_remove": False
             },
             "application": {
-                "faculty": "икнт",
+                "faculty": "ИКНТ",
                 "group": "3530203/10002"
             }
         },
@@ -190,7 +190,7 @@ normal_dialog = [
             "user": {
                 "saved_groups": [
                     {
-                        "faculty": "икнт",
+                        "faculty": "ИКНТ",
                         "group": "3530901/80203"
                     }
                 ],
@@ -199,6 +199,90 @@ normal_dialog = [
             "application": {
                 "group": None,
                 "faculty": None
+            }
+        },
+        "version": "1.0"
+    },
+    {
+
+        "session": {
+
+            "new": False
+        },
+        "request": {
+            "command": "353020310002",
+            "original_utterance": "353020310002",
+            "nlu": {
+                "tokens": [
+                    "353020310002"
+                ],
+                "entities": [
+                    {
+                        "type": "YANDEX.NUMBER",
+                        "tokens": {
+                            "start": 0,
+                            "end": 1
+                        },
+                        "value": 353020310000
+                    }
+                ],
+                "intents": {}
+            },
+            "markup": {
+                "dangerous_context": False
+            },
+            "type": "SimpleUtterance"
+        },
+        "state": {
+            "session": {},
+            "user": {
+                "saved_groups": [
+                    {
+                        "faculty": "ИКНТ",
+                        "group": "3530901/80203"
+                    }
+                ],
+                "intent_remove": False
+            },
+            "application": {
+                "group": None,
+                "faculty": "ИКНТ"
+            }
+        },
+        "version": "1.0"
+    },
+
+    {
+        "session": {
+            "new": True
+        },
+        "request": {
+            "command": "",
+            "original_utterance": "",
+            "nlu": {
+                "tokens": [],
+                "entities": [],
+                "intents": {}
+            },
+            "markup": {
+                "dangerous_context": False
+            },
+            "type": "SimpleUtterance"
+        },
+        "state": {
+            "session": {},
+            "user": {
+                "saved_groups": [
+                    {
+                        "faculty": "ИКНТ",
+                        "group": "3530901/80203"
+                    }
+                ],
+                "intent_remove": False
+            },
+            "application": {
+                "group": None,
+                "faculty": "ИКНТ"
             }
         },
         "version": "1.0"

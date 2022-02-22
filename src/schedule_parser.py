@@ -22,14 +22,11 @@ class ScheduleParser:
             self.set_group(group)
 
     def set_faculty(self, faculty):
-        self.faculty = None
         for item in self.FACULTY_LIST:
-            if faculty == item['abbr'].lower():
+            if faculty == item['abbr']:
                 self.faculty = item['id']
                 return True
-            elif faculty == item['name'].lower():
-                self.faculty = item['id']
-                return False
+        return False
 
     def set_group(self, group):
         GROUP_DICT = self.get_groups()

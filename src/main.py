@@ -186,6 +186,9 @@ def gather_group(event, response_json, faculty, group, sp, rv):
             sp.set_group(possible_group)
             response_json['application_state']['group'] = possible_group
             (output_text, output_tts) = schedule_to_speech.translate(sp.get_schedule())
+        elif group_search == -1:
+            output_text = ""
+            output_tts = ""
         else:
             output_text = "Пожалуйста, уточните номер группы."
             output_tts = "Пожалуйста, уточните номер группы."
@@ -267,8 +270,6 @@ def handler(event, context):
     response_json['application_state']['faculty'] = faculty if faculty else None
     if event['session']['new']:
         (response_json['response']['text'], response_json['response']['tts']) = greeting(faculty, group)
-    if not faculty:
-        faculty_buttons(sp, response_json)
     output_text, output_tts = gather_info(event, response_json, faculty, group, sp)
     response_json['response']['text'] += output_text
     response_json['response']['tts'] += output_tts
