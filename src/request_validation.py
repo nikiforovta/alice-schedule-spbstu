@@ -19,3 +19,6 @@ class RequestValidator:
             group_match = sum(1 for group in groups if group["faculty"]['abbr'] == faculty)
             return group_match
         return -1
+
+    def validate_teacher(self, teacher):
+        return len(self.sp.find_teachers(teacher)) if teacher else -1

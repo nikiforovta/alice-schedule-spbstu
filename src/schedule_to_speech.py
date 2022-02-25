@@ -2,9 +2,6 @@ import datetime
 import random
 
 WEEKDAY_LIST = ["понедельник ", "вторник ", "среду ", "четверг ", "пятницу ", "субботу ", "воскресенье "]
-TIPS_LIST = ["Чтобы выбрать другую группу, скажите \"Смена группы\" или \"Смена института\".",
-             "Еще я могу рассказать расписание для выбранной даты.",
-             "Я могу сохранить выбранную группу, вдруг пригодиться. Скажите \"Сохрани группу\"."]
 MONTH_LIST = ["января ", "февраля ", "марта ", "апреля ", "мая ", "июня ", "июля ", "августа ", "сентября ", "октября ",
               "ноября ", "декабря "]
 
@@ -88,7 +85,4 @@ def translate(schedule, date=datetime.datetime.now().strftime("%Y-%m-%d")):
         (day_text, day_tts) = translate_day(day)
         text += day_text
         tts += day_tts
-    random_tip = random.choice(TIPS_LIST)
-    text += random_tip
-    tts += random_tip
     return text, tts

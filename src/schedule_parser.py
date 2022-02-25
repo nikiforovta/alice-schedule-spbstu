@@ -45,6 +45,10 @@ class ScheduleParser:
         result = self.get_info(f'https://ruz.spbstu.ru/search/groups?q={group}')
         return result['searchGroup']['data']
 
+    def find_teachers(self, teacher):
+        result = self.get_info(f'https://ruz.spbstu.ru/search/teacher?q={teacher}')
+        return result['searchTeacher']['data']
+
     def get_groups(self):
         if self.faculty:
             groups = self.get_info(f'https://ruz.spbstu.ru/faculty/{self.faculty}/groups/')
