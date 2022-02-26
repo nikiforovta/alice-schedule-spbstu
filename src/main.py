@@ -256,13 +256,13 @@ def gather_info(event, response_json, teacher, faculty, group, sp, possible_requ
         possible_teacher = ""
         for pf in possible_fio:
             if pf['type'] == "YANDEX.FIO":
-                possible_teacher = teacher_recognition(pf)
+                possible_teacher = teacher_recognition(pf['value'])
                 break
         if possible_teacher != "":
             found = rv.validate_teacher(possible_teacher)
             if found == 1:
                 sp.set_teacher(possible_teacher)
-                (output_text, output_tts) = gather_date(event, response_json, sp, possible_replies)
+                (output_text, output_tts) = schedule_to_speech.translate(sp.get_schedule())
             elif found > 1:
                 (output_text,
                  output_tts) = "Слишком много совпадений, уточните запрос", "Слишком много совпадений, уточните запрос"

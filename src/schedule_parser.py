@@ -34,9 +34,10 @@ class ScheduleParser:
         self.group = next((item['id'] for item in GROUP_DICT if item['name'] == group), None) if GROUP_DICT else None
 
     def set_teacher(self, teacher):
-        TEACHERS_DICT = self.find_teachers(teacher)
-        self.teacher = next((item['id'] for item in TEACHERS_DICT if item['name'] == teacher),
-                            None) if TEACHERS_DICT else None
+        self.teacher = None
+        if teacher:
+            TEACHERS_DICT = self.find_teachers(teacher)
+            self.teacher = TEACHERS_DICT[0]['id'] if TEACHERS_DICT else None
 
     def get_info(self, url):
         soup = BeautifulSoup(self.session.get(url).text, 'lxml')
@@ -62,8 +63,8 @@ class ScheduleParser:
             return groups['groups']['data'][str(self.faculty)]
         return None
 
-    def get_schedule(self, date=None, teacher=None):
-        if teacher is None:
+    def get_schedule(self, date=None):
+        if self.teacher is None:
             if date is None:
                 schedule = self.get_info(f'https://ruz.spbstu.ru/faculty/{self.faculty}/groups/{self.group}')
             else:
@@ -75,4 +76,4 @@ class ScheduleParser:
                 schedule = self.get_info(f'https://ruz.spbstu.ru/teachers/{self.teacher}')
             else:
                 schedule = self.get_info(f'https://ruz.spbstu.ru/teachers/{self.teacher}?date={date}')
-            return schedule['lessons']['data'][str(self.group)]
+            return schedule['teacherSchedule']['data'][str(self.teacher)]

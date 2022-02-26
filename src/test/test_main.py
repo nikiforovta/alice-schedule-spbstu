@@ -15,10 +15,6 @@ normal_dialog = [
                 "tokens": [],
                 "intents": {}
             },
-            "markup": {
-                "dangerous_context": False
-            },
-            "type": "SimpleUtterance"
         },
         "session": {
             "new": True,
@@ -45,10 +41,6 @@ normal_dialog = [
                 "entities": [],
                 "intents": {}
             },
-            "markup": {
-                "dangerous_context": False
-            },
-            "type": "SimpleUtterance"
         },
         "state": {
             "session": {},
@@ -105,10 +97,6 @@ normal_dialog = [
                 ],
                 "intents": {}
             },
-            "markup": {
-                "dangerous_context": False
-            },
-            "type": "SimpleUtterance"
         },
         "state": {
             "session": {},
@@ -143,10 +131,6 @@ normal_dialog = [
                 "entities": [],
                 "intents": {}
             },
-            "markup": {
-                "dangerous_context": False
-            },
-            "type": "SimpleUtterance"
         },
         "state": {
             "session": {},
@@ -180,10 +164,6 @@ normal_dialog = [
                 "entities": [],
                 "intents": {}
             },
-            "markup": {
-                "dangerous_context": False
-            },
-            "type": "SimpleUtterance"
         },
         "state": {
             "session": {},
@@ -204,9 +184,7 @@ normal_dialog = [
         "version": "1.0"
     },
     {
-
         "session": {
-
             "new": False
         },
         "request": {
@@ -228,10 +206,6 @@ normal_dialog = [
                 ],
                 "intents": {}
             },
-            "markup": {
-                "dangerous_context": False
-            },
-            "type": "SimpleUtterance"
         },
         "state": {
             "session": {},
@@ -264,10 +238,6 @@ normal_dialog = [
                 "entities": [],
                 "intents": {}
             },
-            "markup": {
-                "dangerous_context": False
-            },
-            "type": "SimpleUtterance"
         },
         "state": {
             "session": {},
@@ -288,7 +258,6 @@ normal_dialog = [
         "version": "1.0"
     },
     {
-
         "session": {
             "new": True
         },
@@ -302,16 +271,59 @@ normal_dialog = [
                 "entities": [],
                 "intents": {}
             },
-            "markup": {
-                "dangerous_context": False
-            },
-            "type": "SimpleUtterance"
         },
         "state": {
             "session": {},
             "user": {},
             "application": {
                 "group": None,
+                "faculty": "ИКНТ"
+            }
+        },
+        "version": "1.0"
+    },
+    {
+        "session": {
+            "new": False
+        },
+        "request": {
+            "command": "новопашенный андрей гелиевич",
+            "original_utterance": "новопашенный андрей гелиевич",
+            "nlu": {
+                "tokens": [
+                    "новопашенный",
+                    "андрей",
+                    "гелиевич"
+                ],
+                "entities": [
+                    {
+                        "type": "YANDEX.FIO",
+                        "tokens": {
+                            "start": 0,
+                            "end": 3
+                        },
+                        "value": {
+                            "first_name": "андрей",
+                            "patronymic_name": "гелиевич",
+                            "last_name": "новопашенный"
+                        }
+                    }
+                ],
+                "intents": {}
+            },
+        },
+        "state": {
+            "session": {},
+            "user": {
+                "saved_groups": [
+                    {
+                        "faculty": "ИКНТ",
+                        "group": "3530901/80203"
+                    }
+                ]
+            },
+            "application": {
+                "group": "3530901/80203",
                 "faculty": "ИКНТ"
             }
         },
