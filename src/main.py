@@ -32,6 +32,10 @@ def group_recognition(tokens):
     return group
 
 
+def teacher_recognition(value):
+    return f'{value.get("last_name", "")} {value.get("first_name", "")} {value.get("patronymic_name", "")}'
+
+
 def date_buttons(response_json):
     response_json['response']['buttons'].append({"title": "Вчера", "hide": True})
     response_json['response']['buttons'].append({"title": "Сегодня", "hide": True})
@@ -58,16 +62,19 @@ def generate_response(event):
     }
 
 
-def greeting(faculty, group, possible_greetings):
-    if faculty is None:
-        reply = random.choice(possible_greetings['NO_FACULTY'])
-        return reply, reply
-    elif group is None:
-        reply = random.choice(possible_greetings['NO_GROUP'])
-        return f"{reply} {faculty}).", f"{reply} {' '.join(faculty)}). "
-    else:
-        reply = random.choice(possible_greetings['OK'])
-        return f"{reply} {group} (институт {faculty}).\n", f"{reply} {' '.join(group)} (институт {' '.join(faculty)}). "
+def greeting(teacher, faculty, group, possible_greetings):
+    if teacher is not None:
+        reply = random.choice(possible_greetings['OK']['TEACHER'])
+        return f"{reply} {teacher}", f"{reply} {teacher}"
+    if faculty is not None:
+        if group is not None:
+            reply = random.choice(possible_greetings['OK']['GROUP'])
+            return f"{reply} {group} ({faculty}).\n", f"{reply} {' '.join(group)} ({' '.join(faculty)}). "
+        else:
+            reply = random.choice(possible_greetings['NO_GROUP'])
+            return f"{reply} {faculty}).", f"{reply} {' '.join(faculty)}). "
+    reply = random.choice(possible_greetings['NO_DATA'])
+    return reply, reply
 
 
 def gather_date(event, response_json, sp, possible_replies):
@@ -122,9 +129,8 @@ def list_groups(event, possible_replies, tip=None):
             output_text = "На данный момент сохранены следующие группы:\n"
             output_tts = output_text
             for i, saved_group in enumerate(event['state']['user']['saved_groups']):
-                output_text += f"Номер {i + 1}: {saved_group['group']} (институт {saved_group['faculty']})\n"
-                output_tts += f"Номер {i + 1}: {' '.join(saved_group['group'])} " \
-                              f"(институт {' '.join(saved_group['faculty'])})\n "
+                output_text += f"Номер {i + 1}: {saved_group['group']} ({saved_group['faculty']})\n"
+                output_tts += f"Номер {i + 1}: {' '.join(saved_group['group'])} ({' '.join(saved_group['faculty'])}). "
             if tip:
                 random_tip = random.choice(possible_replies['TIP'])
                 output_text += random_tip
@@ -211,7 +217,7 @@ def gather_group(event, response_json, faculty, group, sp, rv, possible_requests
     return output_text, output_tts
 
 
-def gather_info(event, response_json, faculty, group, sp, possible_requests, possible_replies):
+def gather_info(event, response_json, teacher, faculty, group, sp, possible_requests, possible_replies):
     rv = request_validation.RequestValidator()
     answer = event['request']['original_utterance'].lower()
     if any([stop_request in answer for stop_request in possible_requests['STOP']]):
@@ -235,6 +241,33 @@ def gather_info(event, response_json, faculty, group, sp, possible_requests, pos
         response_json['user_state_update']['intent_remove'] = False
     elif any([reset_request in answer for reset_request in possible_requests['RESET']]):
         (output_text, output_tts) = reset_settings(event, response_json, sp, possible_replies["RESET"])
+    elif teacher:
+        sp.set_teacher(teacher)
+        if answer == 'смена преподавателя':
+            sp.set_teacher(None)
+            response_json['application_state']['teacher'] = None
+            output_text = "Назовите имя преподавателя."
+            output_tts = "Назовите имя преподавателя."
+        else:
+            (output_text, output_tts) = gather_date(event, response_json, sp, possible_replies)
+    elif len([x for x in event['request']['nlu']['entities'] if x['type'] == "YANDEX.FIO"]) > 0:
+        (output_text, output_tts) = "", ""
+        possible_fio = event['request']['nlu']['entities']
+        possible_teacher = ""
+        for pf in possible_fio:
+            if pf['type'] == "YANDEX.FIO":
+                possible_teacher = teacher_recognition(pf)
+                break
+        if possible_teacher != "":
+            found = rv.validate_teacher(possible_teacher)
+            if found == 1:
+                sp.set_teacher(possible_teacher)
+                (output_text, output_tts) = gather_date(event, response_json, sp, possible_replies)
+            elif found > 1:
+                (output_text,
+                 output_tts) = "Слишком много совпадений, уточните запрос", "Слишком много совпадений, уточните запрос"
+            else:
+                (output_text, output_tts) = "Преподаватель не найден", "Преподаватель не найден"
     elif faculty:
         sp.set_faculty(faculty)
         if answer == 'смена группы':
@@ -271,9 +304,10 @@ def gather_info(event, response_json, faculty, group, sp, possible_requests, pos
 
 
 def handler(event, context):
+    teacher = event['state']['application'].get('teacher')
     faculty = event['state']['application'].get('faculty')
     group = event['state']['application'].get('group')
-    sp = schedule_parser.ScheduleParser(faculty, group)
+    sp = schedule_parser.ScheduleParser(teacher, faculty, group)
     response_json = generate_response(event)
     response_json['application_state']['group'] = group if group else None
     response_json['application_state']['faculty'] = faculty if faculty else None
@@ -282,10 +316,10 @@ def handler(event, context):
             possible_requests = yaml.safe_load(preq)
             possible_replies = yaml.safe_load(prep)
         if event['session']['new']:
-            (response_json['response']['text'], response_json['response']['tts']) = greeting(faculty, group,
+            (response_json['response']['text'], response_json['response']['tts']) = greeting(teacher, faculty, group,
                                                                                              possible_replies[
                                                                                                  "GREETING"])
-        output_text, output_tts = gather_info(event, response_json, faculty, group, sp, possible_requests,
+        output_text, output_tts = gather_info(event, response_json, teacher, faculty, group, sp, possible_requests,
                                               possible_replies)
         response_json['response']['text'] += output_text
         response_json['response']['tts'] += output_tts
