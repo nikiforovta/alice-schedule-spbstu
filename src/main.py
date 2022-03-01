@@ -303,7 +303,7 @@ def gather_info(event, response_json, teacher, faculty, group, sp, possible_requ
     return output_text, output_tts
 
 
-def handler(event, context):
+def handler(event, context, requests="requests.yaml", replies="replies.yaml"):
     teacher = event['state']['application'].get('teacher')
     faculty = event['state']['application'].get('faculty')
     group = event['state']['application'].get('group')
@@ -311,8 +311,8 @@ def handler(event, context):
     response_json = generate_response(event)
     response_json['application_state']['group'] = group if group else None
     response_json['application_state']['faculty'] = faculty if faculty else None
-    with open("requests.yaml", "r", encoding='utf8') as preq:
-        with open("replies.yaml", "r", encoding='utf8') as prep:
+    with open(requests, "r", encoding='utf8') as preq:
+        with open(replies, "r", encoding='utf8') as prep:
             possible_requests = yaml.safe_load(preq)
             possible_replies = yaml.safe_load(prep)
         if event['session']['new']:
