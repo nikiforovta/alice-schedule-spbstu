@@ -67,7 +67,7 @@ def translate_day(day):
 def translate(schedule, date=datetime.datetime.now().strftime("%Y-%m-%d")):
     text = ""
     tts = ""
-    day = next((item for item in schedule if item["date"] == date), None)
+    day = next((item for item in schedule['days'] if item["date"] == date), None)
     if day is None:
         today = datetime.datetime.now().strftime("%Y-%m-%d")
         if date == today:
