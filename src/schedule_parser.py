@@ -15,15 +15,21 @@ class ScheduleParser:
         for item in self.FACULTY_LIST:
             self.NAME_ABBR[item['name'].lower()] = item['abbr'].lower()
             self.ABBR_CONVERSION[item['abbr'].lower()] = item['abbr']
-        self.set_teacher(teacher)
-        self.set_faculty(faculty)
-        self.set_group(group)
+        if teacher is not None:
+            self.set_teacher(teacher)
+        elif faculty is not None:
+            self.set_faculty(faculty)
+            if group is not None:
+                self.set_group(group)
 
     def set_faculty(self, faculty):
         for item in self.FACULTY_LIST:
-            if faculty == item['abbr']:
+            if faculty == item['abbr'].lower() or faculty == item['abbr']:
                 self.faculty = item['id']
                 return True
+            elif faculty == item['name'].lower():
+                self.faculty = item['id']
+                return False
         return False
 
     def set_group(self, group):
@@ -33,8 +39,8 @@ class ScheduleParser:
     def set_teacher(self, teacher):
         self.teacher = None
         if teacher:
-            TEACHERS_DICT = self.find_teachers(teacher)
-            self.teacher = TEACHERS_DICT[0]['id'] if TEACHERS_DICT else None
+            teachers = self.find_teachers(teacher)
+            self.teacher = teachers[0]['id'] if len(teachers) > 0 else None
 
     def get_info(self, url):
         search = f"https://ruz.spbstu.ru/api/v1/ruz/{url}"

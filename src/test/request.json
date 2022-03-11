@@ -326,5 +326,30 @@
       }
     },
     "version": "1.0"
+  },
+  {
+    "session": {
+      "new": false
+    },
+    "request": {
+      "command": "икнт",
+      "original_utterance": "икнт",
+      "nlu": {
+        "tokens": [
+          "икнт"
+        ],
+        "entities": [],
+        "intents": {}
+      }
+    },
+    "state": {
+      "session": {},
+      "user": {},
+      "application": {
+        "group": null,
+        "faculty": null
+      }
+    },
+    "version": "1.0"
   }
 ]

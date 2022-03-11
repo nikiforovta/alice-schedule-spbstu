@@ -43,8 +43,8 @@ def date_buttons(response_json):
 
 
 def faculty_buttons(sp, response_json):
-    for abbr in sp.NAME_ABBR.values():
-        response_json['response']['buttons'].append({"title": sp.ABBR_CONVERSION[abbr], "hide": True})
+    for faculty in sp.FACULTY_LIST:
+        response_json['response']['buttons'].append({"title": faculty["abbr"], "hide": True})
 
 
 def generate_response(event):
@@ -178,7 +178,6 @@ def gather_group(event, response_json, faculty, group, sp, rv, possible_requests
     answer = event['request']['original_utterance'].lower()
 
     if group:
-        sp.set_group(group)
         if event['session']['new']:
             (output_text, output_tts) = schedule_to_speech.translate(sp.get_schedule())
             tip = random.choice(possible_replies['TIP'])
@@ -269,7 +268,6 @@ def gather_info(event, response_json, teacher, faculty, group, sp, possible_requ
             else:
                 (output_text, output_tts) = "Преподаватель не найден", "Преподаватель не найден"
     elif faculty:
-        sp.set_faculty(faculty)
         if answer == 'смена группы':
             sp.set_group(None)
             response_json['application_state']['group'] = None
@@ -287,9 +285,8 @@ def gather_info(event, response_json, teacher, faculty, group, sp, possible_requ
             (output_text, output_tts) = gather_group(event, response_json, faculty, group, sp, rv, possible_requests,
                                                      possible_replies)
     elif rv.validate_faculty(answer):
-        sp.set_faculty(answer)
         response_json['application_state']['faculty'] = sp.ABBR_CONVERSION[answer] if sp.set_faculty(answer) else \
-            sp.ABBR_CONVERSION[sp.NAME_ABBR[answer.lower()]]
+            sp.NAME_ABBR[answer]
         output_text = "И номер группы."
         output_tts = "И номер группы."
     elif answer == "":
