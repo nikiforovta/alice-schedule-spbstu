@@ -2,7 +2,7 @@ import json
 
 import pytest
 
-from main import group_recognition
+from recognition import group_recognition
 from src import main
 
 

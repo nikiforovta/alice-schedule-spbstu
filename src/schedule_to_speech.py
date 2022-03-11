@@ -42,7 +42,7 @@ def translate_day(day):
             tts += f"С {time_start.split(':')[0]} "
         time_end = lesson.get('time_end')
         if time_end is not None:
-            text += f"до {lesson['time_end']} {lesson['subject'].lower()}, {lesson['typeObj']['name'].lower()}. "
+            text += f"до {lesson['time_end']} {lesson['subject']}, {lesson['typeObj']['name'].lower()}. "
             tts += f"до {lesson['time_end']} {lesson['subject'].lower()}, {lesson['typeObj']['name'].lower()}. "
         teachers = lesson.get('teachers')
         if teachers is not None:
@@ -64,11 +64,10 @@ def translate_day(day):
     return text, tts
 
 
-def translate(schedule, date=datetime.datetime.now().strftime("%Y-%m-%d")):
+def translate(schedule_day, date=datetime.datetime.now().strftime("%Y-%m-%d")):
     text = ""
     tts = ""
-    day = next((item for item in schedule['days'] if item["date"] == date), None)
-    if day is None:
+    if schedule_day is None:
         today = datetime.datetime.now().strftime("%Y-%m-%d")
         if date == today:
             text += "Сегодня нет пар.\n"
@@ -81,7 +80,7 @@ def translate(schedule, date=datetime.datetime.now().strftime("%Y-%m-%d")):
             tts += "В этот день не будет пар.\n"
 
     else:
-        (day_text, day_tts) = translate_day(day)
+        (day_text, day_tts) = translate_day(schedule_day)
         text += day_text
         tts += day_tts
     return text, tts

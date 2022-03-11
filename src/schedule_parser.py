@@ -1,3 +1,5 @@
+import datetime
+
 import requests
 
 
@@ -64,7 +66,8 @@ class ScheduleParser:
             return groups['groups']
         return None
 
-    def get_schedule(self, date=None):
+    def get_schedule(self, date=datetime.datetime.now().strftime("%Y-%m-%d")):
         search = f'teachers/{self.teacher}/scheduler' if self.teacher else f'scheduler/{self.group}'
-        search += f'?date={date}' if date else ""
-        return self.get_info(search)
+        search += f'?date={date}'
+        schedule = self.get_info(search)
+        return next((item for item in schedule['days'] if item['date'] == date), None)
