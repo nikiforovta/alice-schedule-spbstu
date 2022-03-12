@@ -13,13 +13,9 @@ def update_schedule(event, response_json, sp):
             response_json['user_state_update']['saved_groups'][i]['schedule'] = schedule
 
 
-def save_schedule(event, response_json, sp):
-    saved_groups = event['state']['user'].get('saved_groups')
-    saved_group_index = next(
-        (i for i in range(len(saved_groups)) if saved_groups[i]['group'] == event['state']['application']['group']),
-        None)
-    response_json['user_state_update']['saved_groups'][saved_group_index]['schedule'] = sp.compact_week(
-        sp.get_schedule_week())
+def save_schedule(response_json, sp):
+    for i in range(len(response_json['user_state_update']['saved_groups'])):
+        response_json['user_state_update']['saved_groups'][i]['schedule'] = sp.compact_week(sp.get_schedule_week())
 
 
 def save_group(event, response_json, sp):
@@ -39,7 +35,7 @@ def save_group(event, response_json, sp):
             {'faculty': event['state']['application']['faculty'], 'group': event['state']['application']['group']}]
     output_text = f"Группа {event['state']['application']['group']} сохранена."
     output_tts = f"Группа {' '.join(event['state']['application']['group'])} сохранена."
-    threading.Thread(target=save_schedule, args=(event, response_json, sp)).run()
+    threading.Thread(target=save_schedule, args=(response_json, sp)).run()
     return output_text, output_tts
 
 
