@@ -66,8 +66,46 @@ class ScheduleParser:
             return groups['groups']
         return None
 
+    def compact_day(self, schedule_day):
+        if schedule_day:
+            compact_day = schedule_day
+            lessons = compact_day.get('lessons')
+            for i in range(len(lessons)):
+                lessons[i].pop("subject_short", None)
+                lessons[i].pop("type", None)
+                lessons[i].pop("additional_info", None)
+                lessons[i].pop("parity", None)
+                lessons[i]['typeObj'].pop("id", None)
+                lessons[i]['typeObj'].pop("abbr", None)
+                lessons[i].pop("groups", None)
+                teachers = lessons[i].get('teachers')
+                if teachers:
+                    for j in range(len(teachers)):
+                        lessons[i]['teachers'][j] = teachers[j].get('full_name')
+                auditories = lessons[i].get('auditories')
+                if auditories:
+                    for k in range(len(auditories)):
+                        lessons[i]['auditories'][k].pop("id", None)
+                        lessons[i]['auditories'][k]['building'].pop("id", None)
+                        lessons[i]['auditories'][k]['building'].pop("abbr", None)
+                        lessons[i]['auditories'][k]['building'].pop("address", None)
+                lessons[i].pop("webinar_url", None)
+                lessons[i].pop("lms_url", None)
+            return compact_day
+        return schedule_day
+
+    def compact_week(self, schedule_week):
+        compact_week = schedule_week
+        for i in range(len(compact_week)):
+            compact_week[i] = self.compact_day(schedule_week[i])
+        return compact_week
+
     def get_schedule(self, date=datetime.datetime.now().strftime("%Y-%m-%d")):
         search = f'teachers/{self.teacher}/scheduler' if self.teacher else f'scheduler/{self.group}'
         search += f'?date={date}'
         schedule = self.get_info(search)
-        return next((item for item in schedule['days'] if item['date'] == date), None)
+        return self.compact_day(next((item for item in schedule['days'] if item['date'] == date), None))
+
+    def get_schedule_week(self):
+        return self.get_info(f'teachers/{self.teacher}/scheduler' if self.teacher else f'scheduler/{self.group}')[
+            'days']

@@ -42,12 +42,14 @@ def translate_day(day):
             tts += f"С {time_start.split(':')[0]} "
         time_end = lesson.get('time_end')
         if time_end is not None:
-            text += f"до {lesson['time_end']} {lesson['subject']}, {lesson['typeObj']['name'].lower()}. "
-            tts += f"до {lesson['time_end']} {lesson['subject'].lower()}, {lesson['typeObj']['name'].lower()}. "
+            text += f"до {time_end} {lesson['subject']}"
+            tts += f"до {time_end} {lesson['subject'].lower()}"
+        text += f", {lesson['typeObj']['name'].lower()}. "
+        tts += f", {lesson['typeObj']['name'].lower()}. "
         teachers = lesson.get('teachers')
         if teachers is not None:
-            text += f"Преподаватель - {lesson['teachers'][0]['full_name']}. "
-            tts += f"Преподаватель - {lesson['teachers'][0]['full_name']}. "
+            text += f"Преподаватель - {teachers[0]}. "
+            tts += f"Преподаватель - {teachers[0]}. "
         auditories = lesson.get('auditories')
         if auditories is not None:
             if auditories[0]['name'] == 'Дистанционно':

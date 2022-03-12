@@ -58,7 +58,7 @@ def gather_group(event, response_json, faculty, group, sp, rv, possible_requests
             if any([list_request in answer for list_request in possible_requests['LIST']]):
                 (output_text, output_tts) = list_groups(event, possible_replies, tip=True)
             elif any([save_request in answer for save_request in possible_requests['SAVE']]):
-                (output_text, output_tts) = save_group(event, response_json)
+                (output_text, output_tts) = save_group(event, response_json, sp)
             elif any([remove_request in answer for remove_request in possible_requests['REMOVE']]):
                 (output_text, output_tts) = remove_group_options(event, response_json, possible_replies)
             else:

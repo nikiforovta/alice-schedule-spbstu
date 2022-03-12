@@ -1,8 +1,10 @@
 import json
 import random
+import threading
 
 import yaml
 
+import group_operations
 import schedule_parser
 from data_gathering import gather_info
 
@@ -37,14 +39,12 @@ def greeting(teacher, faculty, group, possible_greetings):
     return reply, reply
 
 
-
-
-
 def handler(event, context, requests="requests.yaml", replies="replies.yaml"):
     teacher = event['state']['application'].get('teacher')
     faculty = event['state']['application'].get('faculty')
     group = event['state']['application'].get('group')
     sp = schedule_parser.ScheduleParser(teacher, faculty, group)
+    background_sp = schedule_parser.ScheduleParser()
     response_json = generate_response(event)
     response_json['application_state']['group'] = group if group else None
     response_json['application_state']['faculty'] = faculty if faculty else None
@@ -56,6 +56,7 @@ def handler(event, context, requests="requests.yaml", replies="replies.yaml"):
             (response_json['response']['text'], response_json['response']['tts']) = greeting(teacher, faculty, group,
                                                                                              possible_replies[
                                                                                                  "GREETING"])
+            threading.Thread(target=group_operations.update_schedule, args=(event, background_sp))
         output_text, output_tts = gather_info(event, response_json, teacher, faculty, group, sp, possible_requests,
                                               possible_replies)
         response_json['response']['text'] += output_text
