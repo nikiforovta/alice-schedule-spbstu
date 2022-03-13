@@ -1,4 +1,5 @@
 import datetime
+import time
 
 from dateutil.relativedelta import relativedelta
 
@@ -32,3 +33,7 @@ def translate_datetime(date):
         return res
     except ValueError:
         return None
+
+
+def lessons_time(time_end):
+    return time.strptime(time_end, "%H:%m") >= time.strptime(datetime.datetime.now().strftime("%H:%m"), "%H:%m")
