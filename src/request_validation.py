@@ -21,4 +21,5 @@ class RequestValidator:
         return -1
 
     def validate_teacher(self, teacher):
-        return len(self.sp.find_teachers(teacher)) if teacher else -1
+        found = self.sp.find_teachers(teacher) if teacher else None
+        return len(found) if found else -1
