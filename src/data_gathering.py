@@ -1,5 +1,7 @@
 import random
 
+from fuzzywuzzy import fuzz
+
 import datetime_operations
 import request_validation
 import schedule_to_speech
@@ -14,7 +16,7 @@ def reset_settings(event, response_json, sp, possible_reset):
     if user_settings:
         for k in user_settings.keys():
             response_json['user_state_update'][k] = None
-    response_json['application_state'] = {}
+    response_json['session_state'] = {}
     sp.set_faculty(None)
     sp.set_group(None)
     reply = random.choice(possible_reset)
@@ -28,7 +30,7 @@ def gather_date(event, response_json, sp, possible_replies):
     if date is not None:
         date = datetime_operations.translate_datetime(date)
         if date is not None:
-            (output_text, output_tts) = schedule_to_speech.translate(sp.get_schedule(date), date)
+            (output_text, output_tts) = schedule_to_speech.translate(sp.get_schedule(date, for_teacher=False), date)
             tip = random.choice(possible_replies['TIP'])
             output_text += tip
             output_tts += tip
@@ -50,7 +52,7 @@ def gather_group(event, response_json, faculty, group, sp, rv, possible_requests
 
     if group:
         if event['session']['new']:
-            (output_text, output_tts) = schedule_to_speech.translate(sp.get_schedule())
+            (output_text, output_tts) = schedule_to_speech.translate(sp.get_schedule(for_teacher=False))
             tip = random.choice(possible_replies['TIP'])
             output_text += tip
             output_tts += tip
@@ -72,8 +74,8 @@ def gather_group(event, response_json, faculty, group, sp, rv, possible_requests
             output_tts = reply
         elif group_search == 1:
             sp.set_group(possible_group)
-            response_json['application_state']['group'] = possible_group
-            (output_text, output_tts) = schedule_to_speech.translate(sp.get_schedule())
+            response_json['session_state']['group'] = possible_group
+            (output_text, output_tts) = schedule_to_speech.translate(sp.get_schedule(for_teacher=False))
             tip = random.choice(possible_replies['TIP'])
             output_text += tip
             output_tts += tip
@@ -87,85 +89,154 @@ def gather_group(event, response_json, faculty, group, sp, rv, possible_requests
     return output_text, output_tts
 
 
-def gather_info(event, response_json, teacher, faculty, group, sp, possible_requests, possible_replies):
-    rv = request_validation.RequestValidator()
-    answer = event['request']['original_utterance'].lower()
-    if any([stop_request in answer for stop_request in possible_requests['STOP']]):
-        response_json['response']['end_session'] = True
-        reply = random.choice(possible_replies['STOP'])
-        output_text, output_tts = reply, reply
-    elif any([help_request in answer for help_request in possible_requests['HELP']]):
-        reply = random.choice(possible_replies['HELP'])
-        output_text, output_tts = reply, reply
-    elif event['state']['user'].get('intent_remove'):
-        possible_index = event['request']['nlu']['entities']
-        index = -1
-        for pi in possible_index:
-            if pi['type'] == "YANDEX.NUMBER":
-                index = int(pi['value'])
-                break
-        if index != -1:
-            (output_text, output_tts) = remove_group(event, response_json, index)
+def gather_group_schedule(sp, request):
+    date = request.get('date')
+    degree = request.get('degree')
+    course = request.get('course')
+    faculty = request.get('faculty')
+    type = request.get('type')
+    spec = request.get('spec')
+    group_number = request.get('group')
+    output_text = ""
+    output_tts = ""
+    group = sp.find_group(faculty=faculty, type=type, level=course, spec=spec, group_number=group_number, degree=degree)
+    if group:
+        sp.set_faculty_by_id(faculty['value'])
+        sp.set_group(group['name'])
+        if date:
+            date = datetime_operations.translate_datetime(date)
+            (output_text, output_tts) = schedule_to_speech.translate(sp.get_schedule(date, for_teacher=False))
         else:
-            (output_text, output_tts) = "Группа с таким номером не найдена", "Группа с таким номером не найдена"
-        response_json['user_state_update']['intent_remove'] = False
-    elif any([reset_request in answer for reset_request in possible_requests['RESET']]):
-        (output_text, output_tts) = reset_settings(event, response_json, sp, possible_replies["RESET"])
-    elif teacher:
-        sp.set_teacher(teacher)
-        if answer == 'смена преподавателя':
-            sp.set_teacher(None)
-            response_json['application_state']['teacher'] = None
-            output_text = "Назовите имя преподавателя."
-            output_tts = "Назовите имя преподавателя."
-        else:
-            (output_text, output_tts) = gather_date(event, response_json, sp, possible_replies)
-    elif len([x for x in event['request']['nlu']['entities'] if x['type'] == "YANDEX.FIO"]) > 0:
-        (output_text, output_tts) = "", ""
-        possible_fio = event['request']['nlu']['entities']
-        possible_teacher = ""
-        for pf in possible_fio:
-            if pf['type'] == "YANDEX.FIO":
-                possible_teacher = teacher_recognition(pf['value'])
-                break
+            (output_text, output_tts) = schedule_to_speech.translate(sp.get_schedule(for_teacher=False))
+    return output_text, output_tts
+
+
+def gather_teacher_schedule(rv, sp, request):
+    output_text = ""
+    output_tts = ""
+    date = request.get('date')
+    name = request.get('name')
+    if name:
+        possible_teacher = teacher_recognition(name['value'])
         if possible_teacher != "":
             found = rv.validate_teacher(possible_teacher)
             if found == 1:
                 sp.set_teacher(possible_teacher)
-                (output_text, output_tts) = schedule_to_speech.translate(sp.get_schedule())
+                (output_text, output_tts) = schedule_to_speech.translate(sp.get_schedule(date))
             elif found > 1:
                 (output_text,
                  output_tts) = "Слишком много совпадений, уточните запрос", "Слишком много совпадений, уточните запрос"
             else:
                 (output_text, output_tts) = "Преподаватель не найден", "Преподаватель не найден"
-    elif faculty:
-        if answer == 'смена группы':
-            sp.set_group(None)
-            response_json['application_state']['group'] = None
-            output_text = "Назовите номер группы."
-            output_tts = "Назовите номер группы."
-        elif answer == 'смена института':
-            sp.set_faculty(None)
-            sp.set_group(None)
-            response_json['application_state']['faculty'] = None
-            response_json['application_state']['group'] = None
-            output_text = "Назовите институт."
-            output_tts = "Назовите институт."
+    return output_text, output_tts
+
+
+def gather_remove(event, response_json, possible_replies):
+    possible_index = event['request']['nlu']['entities']
+    index = -1
+    for pi in possible_index:
+        if pi['type'] == "YANDEX.NUMBER":
+            index = int(pi['value'])
+            break
+    if index != -1:
+        (output_text, output_tts) = remove_group(event, response_json, index)
+    else:
+        reply = random.choice(possible_replies["GROUP_NOT_FOUND"]["NO_MATCHES"])
+        (output_text, output_tts) = reply, reply
+    response_json['user_state_update']['intent_remove'] = False
+    return output_text, output_tts
+
+
+def gather_faculty_change(sp, response_json, possible_replies):
+    sp.set_faculty(None)
+    sp.set_group(None)
+    response_json['session_state']['faculty'] = None
+    response_json['session_state']['group'] = None
+    reply = random.choice(possible_replies["INQUIRY"]["FACULTY"])
+    faculty_buttons(sp, response_json)
+    return reply, reply
+
+
+def gather_teacher_change(sp, response_json, possible_replies):
+    sp.set_teacher(None)
+    response_json['session_state']['teacher'] = None
+    reply = random.choice(possible_replies["INQUIRY"]["TEACHER"])
+    return reply, reply
+
+
+def gather_group_change(sp, response_json, possible_replies):
+    sp.set_group(None)
+    response_json['session_state']['group'] = None
+    reply = random.choice(possible_replies["INQUIRY"]["GROUP"])
+    return reply, reply
+
+
+def gather_teacher(event, rv, sp, possible_replies):
+    possible_fio = event['request']['nlu']['entities']
+    possible_teacher = ""
+    for pf in possible_fio:
+        if pf['type'] == "YANDEX.FIO":
+            possible_teacher = teacher_recognition(pf['value'])
+            break
+    if possible_teacher != "":
+        found = rv.validate_teacher(possible_teacher)
+        if found == 1:
+            sp.set_teacher(possible_teacher)
+            return schedule_to_speech.translate(sp.get_schedule())
+        elif found > 1:
+            reply = random.choice(possible_replies["TEACHER_NOT_FOUND"]["TOO_MANY_FOUND"])
+            return reply, reply
+        else:
+            reply = random.choice(possible_replies["TEACHER_NOT_FOUND"]["NO_MATCHES"])
+            return reply, reply
+
+
+def gather_info(event, response_json, teacher, faculty, group, sp, possible_requests, possible_replies):
+    rv = request_validation.RequestValidator()
+    answer = event['request']['original_utterance'].lower()
+    intents = event['request']['nlu']
+    group_request = intents.get('group_schedule')
+    teacher_request = intents.get('teacher_schedule')
+    if group_request:
+        output_text, output_tts = gather_group_schedule(sp, group_request['slots'])
+    elif teacher_request:
+        output_text, output_tts = gather_teacher_schedule(rv, sp, teacher_request['slots'])
+    else:
+        if any([stop_request in answer for stop_request in possible_requests['STOP']]):
+            response_json['response']['end_session'] = True
+            reply = random.choice(possible_replies['STOP'])
+            output_text, output_tts = reply, reply
+        elif any([help_request in answer for help_request in possible_requests['HELP']]):
+            reply = random.choice(possible_replies['HELP'])
+            output_text, output_tts = reply, reply
+        elif event['state']['user'].get('intent_remove'):
+            output_text, output_tts = gather_remove(event, response_json, possible_replies)
+        elif any([reset_request in answer for reset_request in possible_requests['RESET']]):
+            (output_text, output_tts) = reset_settings(event, response_json, sp, possible_replies["RESET"])
+        elif teacher:
+            if fuzz.token_sort_ratio(answer, "смена преподавателя") > 75:
+                output_text, output_tts = gather_teacher_change(sp, response_json, possible_replies)
+            else:
+                (output_text, output_tts) = gather_date(event, response_json, sp, possible_replies)
+        elif len([x for x in event['request']['nlu']['entities'] if x['type'] == "YANDEX.FIO"]) > 0:
+            (output_text, output_tts) = gather_teacher(event, rv, sp, possible_replies)
+        elif faculty:
+            if fuzz.token_sort_ratio(answer, "смена группы") > 75:
+                output_text, output_tts = gather_group_change(sp, response_json, possible_replies)
+            elif fuzz.token_sort_ratio(answer, "смена института") > 75:
+                output_text, output_tts = gather_faculty_change(sp, response_json, possible_replies)
+            else:
+                (output_text, output_tts) = gather_group(event, response_json, faculty, group, sp, rv,
+                                                         possible_requests, possible_replies)
+        elif rv.validate_faculty(answer):
+            response_json['session_state']['faculty'] = sp.ABBR_CONVERSION[answer] if sp.set_faculty(answer) else \
+            sp.NAME_ABBR[answer]
+            output_text, output_tts = "И номер группы.", "И номер группы."
+        elif answer == "":
+            output_text, output_tts = "", ""
             faculty_buttons(sp, response_json)
         else:
-            (output_text, output_tts) = gather_group(event, response_json, faculty, group, sp, rv, possible_requests,
-                                                     possible_replies)
-    elif rv.validate_faculty(answer):
-        response_json['application_state']['faculty'] = sp.ABBR_CONVERSION[answer] if sp.set_faculty(answer) else \
-            sp.NAME_ABBR[answer]
-        output_text = "И номер группы."
-        output_tts = "И номер группы."
-    elif answer == "":
-        output_text = ""
-        output_tts = ""
-        faculty_buttons(sp, response_json)
-    else:
-        output_text = "Ой, я такой институт не знаю, попробуйте еще раз."
-        output_tts = "Ой, я такой институт не знаю, попробуйте еще раз."
-        faculty_buttons(sp, response_json)
+            reply = random.choice(possible_replies["FACULTY_NOT_FOUND"]["NO_MATCHES"])
+            output_text, output_tts = reply, reply
+            faculty_buttons(sp, response_json)
     return output_text, output_tts

@@ -22,19 +22,19 @@ def save_group(event, response_json, sp):
     saved_groups = event['state']['user'].get('saved_groups')
     if saved_groups:
         for saved_group in saved_groups:
-            if saved_group['faculty'] == event['state']['application']['faculty'] and saved_group['group'] == \
-                    event['state']['application']['group']:
+            if saved_group['faculty'] == event['state']['session']['faculty'] and saved_group['group'] == \
+                    event['state']['session']['group']:
                 output_text = f"Группа {saved_group['group']} уже сохранена"
                 output_tts = f"Группа {' '.join(saved_group['group'])} уже сохранена"
                 return output_text, output_tts
         saved_groups.append(
-            {"faculty": event['state']['application']['faculty'], "group": event['state']['application']['group']})
+            {"faculty": event['state']['session']['faculty'], "group": event['state']['session']['group']})
         response_json['user_state_update']['saved_groups'] = saved_groups
     else:
         response_json['user_state_update']['saved_groups'] = [
-            {'faculty': event['state']['application']['faculty'], 'group': event['state']['application']['group']}]
-    output_text = f"Группа {event['state']['application']['group']} сохранена."
-    output_tts = f"Группа {' '.join(event['state']['application']['group'])} сохранена."
+            {'faculty': event['state']['session']['faculty'], 'group': event['state']['session']['group']}]
+    output_text = f"Группа {event['state']['session']['group']} сохранена."
+    output_tts = f"Группа {' '.join(event['state']['session']['group'])} сохранена."
     threading.Thread(target=save_schedule, args=(response_json, sp)).run()
     return output_text, output_tts
 

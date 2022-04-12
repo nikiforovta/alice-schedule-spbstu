@@ -13,9 +13,8 @@
       "new": true
     },
     "state": {
-      "session": {},
       "user": {},
-      "application": {}
+      "session": {}
     },
     "version": "1.0"
   },
@@ -36,9 +35,8 @@
       }
     },
     "state": {
-      "session": {},
       "user": {},
-      "application": {
+      "session": {
         "faculty": "ИКНТ"
       }
     },
@@ -68,7 +66,7 @@
     },
     "state": {
       "user": {},
-      "application": {
+      "session": {
         "faculty": "ИКНТ",
         "group": "3530901/80203"
       }
@@ -100,7 +98,6 @@
       }
     },
     "state": {
-      "session": {},
       "user": {
         "saved_groups": [
           {
@@ -110,7 +107,7 @@
         ],
         "intent_remove": true
       },
-      "application": {
+      "session": {
         "faculty": "ИКНТ",
         "group": "3530901/80203"
       }
@@ -134,7 +131,6 @@
       }
     },
     "state": {
-      "session": {},
       "user": {
         "saved_groups": [
           {
@@ -144,7 +140,7 @@
         ],
         "intent_remove": false
       },
-      "application": {
+      "session": {
         "faculty": "ИКНТ",
         "group": "3530203/10002"
       }
@@ -165,7 +161,6 @@
       }
     },
     "state": {
-      "session": {},
       "user": {
         "saved_groups": [
           {
@@ -175,7 +170,7 @@
         ],
         "intent_remove": false
       },
-      "application": {
+      "session": {
         "group": null,
         "faculty": null
       }
@@ -207,7 +202,6 @@
       }
     },
     "state": {
-      "session": {},
       "user": {
         "saved_groups": [
           {
@@ -217,7 +211,7 @@
         ],
         "intent_remove": false
       },
-      "application": {
+      "session": {
         "group": null,
         "faculty": "ИКНТ"
       }
@@ -238,7 +232,6 @@
       }
     },
     "state": {
-      "session": {},
       "user": {
         "saved_groups": [
           {
@@ -248,7 +241,7 @@
         ],
         "intent_remove": false
       },
-      "application": {
+      "session": {
         "group": null,
         "faculty": "ИКНТ"
       }
@@ -271,9 +264,8 @@
       }
     },
     "state": {
-      "session": {},
       "user": {},
-      "application": {
+      "session": {
         "group": null,
         "faculty": "ИКНТ"
       }
@@ -311,7 +303,6 @@
       }
     },
     "state": {
-      "session": {},
       "user": {
         "saved_groups": [
           {
@@ -320,7 +311,7 @@
           }
         ]
       },
-      "application": {
+      "session": {
         "group": "3530901/80203",
         "faculty": "ИКНТ"
       }
@@ -343,13 +334,505 @@
       }
     },
     "state": {
-      "session": {},
       "user": {},
-      "application": {
+      "session": {
         "group": null,
         "faculty": null
       }
     },
     "version": "1.0"
-  }
+  },
+  {
+    "meta": {
+      "locale": "ru-RU",
+      "timezone": "UTC",
+      "client_id": "ru.yandex.searchplugin/7.16 (none none; android 4.4.2)",
+      "interfaces": {
+        "screen": {},
+        "payments": {},
+        "account_linking": {}
+      }
+    },
+    "session": {
+      "message_id": 3,
+      "session_id": "6e62ac35-5e3e-4f9c-8730-1cf357c6fcdd",
+      "skill_id": "b4650c20-82ab-45ad-bd26-d2aae92e40ea",
+      "user": {
+        "user_id": "9412254570D58A0F1F0CF25FEC75B20D09C3B0F3AA4DA94F49557F801C160685"
+      },
+      "session": {
+        "session_id": "4FF410F6BC3708F9CD20BB8BBFAF817038ECF4206969F3FD11836D83F95BD6CE"
+      },
+      "new": false,
+      "user_id": "4FF410F6BC3708F9CD20BB8BBFAF817038ECF4206969F3FD11836D83F95BD6CE"
+    },
+    "request": {
+      "command": "сохрани группу",
+      "original_utterance": "сохрани группу",
+      "nlu": {
+        "tokens": [
+          "сохрани",
+          "группу"
+        ],
+        "entities": [],
+        "intents": {}
+      },
+      "markup": {
+        "dangerous_context": false
+      },
+      "type": "SimpleUtterance"
+    },
+    "state": {
+      "user": {
+        "saved_groups": [],
+        "intent_remove": false
+      },
+      "session": {
+        "group": "3530203/10002",
+        "faculty": "ИКНТ"
+      }
+    },
+    "version": "1.0"
+  },
+  {
+  "meta": {
+    "locale": "ru-RU",
+    "timezone": "UTC",
+    "client_id": "ru.yandex.searchplugin/7.16 (none none; android 4.4.2)",
+    "interfaces": {
+      "screen": {},
+      "payments": {},
+      "account_linking": {}
+    }
+  },
+  "session": {
+    "message_id": 2,
+    "session_id": "f4fce4d9-6ce4-4590-b7d1-c60daec78126",
+    "skill_id": "b4650c20-82ab-45ad-bd26-d2aae92e40ea",
+    "user": {
+      "user_id": "9412254570D58A0F1F0CF25FEC75B20D09C3B0F3AA4DA94F49557F801C160685"
+    },
+    "session": {
+      "session_id": "4FF410F6BC3708F9CD20BB8BBFAF817038ECF4206969F3FD11836D83F95BD6CE"
+    },
+    "user_id": "4FF410F6BC3708F9CD20BB8BBFAF817038ECF4206969F3FD11836D83F95BD6CE",
+    "new": false
+  },
+  "request": {
+    "command": "хочу расписание андрея новопашенного",
+    "original_utterance": "хочу расписание андрея новопашенного",
+    "nlu": {
+      "tokens": [
+        "хочу",
+        "расписание",
+        "андрея",
+        "новопашенного"
+      ],
+      "entities": [
+        {
+          "type": "YANDEX.FIO",
+          "tokens": {
+            "start": 2,
+            "end": 4
+          },
+          "value": {
+            "first_name": "андрей",
+            "last_name": "новопашенного"
+          }
+        }
+      ],
+      "intents": {
+        "teacher_schedule": {
+          "slots": {
+            "name": {
+              "type": "YANDEX.FIO",
+              "tokens": {
+                "start": 2,
+                "end": 4
+              },
+              "value": {
+                "first_name": "андрей",
+                "last_name": "новопашенного"
+              }
+            }
+          }
+        }
+      }
+    },
+    "markup": {
+      "dangerous_context": false
+    },
+    "type": "SimpleUtterance"
+  },
+  "state": {
+    "user": {
+      "saved_groups": [
+        {
+          "faculty": "ИКНТ",
+          "group": "3530203/10002",
+          "schedule": [
+            {
+              "weekday": 1,
+              "date": "2022-03-07",
+              "lessons": [
+                {
+                  "subject": "Защита информации",
+                  "time_start": "12:00",
+                  "time_end": "13:40",
+                  "typeObj": {
+                    "name": "Лекции"
+                  },
+                  "teachers": [
+                    "Новопашенный Андрей Гелиевич"
+                  ],
+                  "auditories": [
+                    {
+                      "name": "Дистанционно",
+                      "building": {
+                        "name": "DL"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "subject": "Системный анализ и принятие решений",
+                  "time_start": "14:00",
+                  "time_end": "15:40",
+                  "typeObj": {
+                    "name": "Лекции"
+                  },
+                  "teachers": [
+                    "Сиднев Александр Георгиевич"
+                  ],
+                  "auditories": [
+                    {
+                      "name": "Дистанционно",
+                      "building": {
+                        "name": "DL"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "subject": "Тестирование программного обеспечения",
+                  "time_start": "16:00",
+                  "time_end": "17:40",
+                  "typeObj": {
+                    "name": "Лекции"
+                  },
+                  "teachers": [
+                    "Ахин Марат Халимович"
+                  ],
+                  "auditories": [
+                    {
+                      "name": "Дистанционно",
+                      "building": {
+                        "name": "DL"
+                      }
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "weekday": 4,
+              "date": "2022-03-10",
+              "lessons": [
+                {
+                  "subject": "Защита информации",
+                  "time_start": "10:00",
+                  "time_end": "11:40",
+                  "typeObj": {
+                    "name": "Лабораторные"
+                  },
+                  "teachers": [
+                    "Новопашенный Андрей Гелиевич"
+                  ],
+                  "auditories": [
+                    {
+                      "name": "402",
+                      "building": {
+                        "name": "3-й учебный корпус"
+                      }
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "weekday": 6,
+              "date": "2022-03-12",
+              "lessons": [
+                {
+                  "subject": "Системный анализ и принятие решений",
+                  "time_start": "14:00",
+                  "time_end": "15:40",
+                  "typeObj": {
+                    "name": "Практика"
+                  },
+                  "teachers": [
+                    "Сабонис Сергей Станиславович"
+                  ],
+                  "auditories": [
+                    {
+                      "name": "401",
+                      "building": {
+                        "name": "3-й учебный корпус"
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "faculty": "ИКНТ",
+          "group": "3530901/80202",
+          "schedule": [
+            {
+              "weekday": 1,
+              "date": "2022-03-07",
+              "lessons": [
+                {
+                  "subject": "Защита информации",
+                  "time_start": "12:00",
+                  "time_end": "13:40",
+                  "typeObj": {
+                    "name": "Лекции"
+                  },
+                  "teachers": [
+                    "Новопашенный Андрей Гелиевич"
+                  ],
+                  "auditories": [
+                    {
+                      "name": "Дистанционно",
+                      "building": {
+                        "name": "DL"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "subject": "Системный анализ и принятие решений",
+                  "time_start": "14:00",
+                  "time_end": "15:40",
+                  "typeObj": {
+                    "name": "Лекции"
+                  },
+                  "teachers": [
+                    "Сиднев Александр Георгиевич"
+                  ],
+                  "auditories": [
+                    {
+                      "name": "Дистанционно",
+                      "building": {
+                        "name": "DL"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "subject": "Тестирование программного обеспечения",
+                  "time_start": "16:00",
+                  "time_end": "17:40",
+                  "typeObj": {
+                    "name": "Лекции"
+                  },
+                  "teachers": [
+                    "Ахин Марат Халимович"
+                  ],
+                  "auditories": [
+                    {
+                      "name": "Дистанционно",
+                      "building": {
+                        "name": "DL"
+                      }
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "weekday": 4,
+              "date": "2022-03-10",
+              "lessons": [
+                {
+                  "subject": "Защита информации",
+                  "time_start": "10:00",
+                  "time_end": "11:40",
+                  "typeObj": {
+                    "name": "Лабораторные"
+                  },
+                  "teachers": [
+                    "Новопашенный Андрей Гелиевич"
+                  ],
+                  "auditories": [
+                    {
+                      "name": "402",
+                      "building": {
+                        "name": "3-й учебный корпус"
+                      }
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "weekday": 6,
+              "date": "2022-03-12",
+              "lessons": [
+                {
+                  "subject": "Системный анализ и принятие решений",
+                  "time_start": "14:00",
+                  "time_end": "15:40",
+                  "typeObj": {
+                    "name": "Практика"
+                  },
+                  "teachers": [
+                    "Сабонис Сергей Станиславович"
+                  ],
+                  "auditories": [
+                    {
+                      "name": "401",
+                      "building": {
+                        "name": "3-й учебный корпус"
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "faculty": "ИКНТ",
+          "group": "3530901/80203",
+          "schedule": [
+            {
+              "weekday": 1,
+              "date": "2022-03-07",
+              "lessons": [
+                {
+                  "subject": "Защита информации",
+                  "time_start": "12:00",
+                  "time_end": "13:40",
+                  "typeObj": {
+                    "name": "Лекции"
+                  },
+                  "teachers": [
+                    "Новопашенный Андрей Гелиевич"
+                  ],
+                  "auditories": [
+                    {
+                      "name": "Дистанционно",
+                      "building": {
+                        "name": "DL"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "subject": "Системный анализ и принятие решений",
+                  "time_start": "14:00",
+                  "time_end": "15:40",
+                  "typeObj": {
+                    "name": "Лекции"
+                  },
+                  "teachers": [
+                    "Сиднев Александр Георгиевич"
+                  ],
+                  "auditories": [
+                    {
+                      "name": "Дистанционно",
+                      "building": {
+                        "name": "DL"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "subject": "Тестирование программного обеспечения",
+                  "time_start": "16:00",
+                  "time_end": "17:40",
+                  "typeObj": {
+                    "name": "Лекции"
+                  },
+                  "teachers": [
+                    "Ахин Марат Халимович"
+                  ],
+                  "auditories": [
+                    {
+                      "name": "Дистанционно",
+                      "building": {
+                        "name": "DL"
+                      }
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "weekday": 4,
+              "date": "2022-03-10",
+              "lessons": [
+                {
+                  "subject": "Защита информации",
+                  "time_start": "10:00",
+                  "time_end": "11:40",
+                  "typeObj": {
+                    "name": "Лабораторные"
+                  },
+                  "teachers": [
+                    "Новопашенный Андрей Гелиевич"
+                  ],
+                  "auditories": [
+                    {
+                      "name": "402",
+                      "building": {
+                        "name": "3-й учебный корпус"
+                      }
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "weekday": 6,
+              "date": "2022-03-12",
+              "lessons": [
+                {
+                  "subject": "Системный анализ и принятие решений",
+                  "time_start": "14:00",
+                  "time_end": "15:40",
+                  "typeObj": {
+                    "name": "Практика"
+                  },
+                  "teachers": [
+                    "Сабонис Сергей Станиславович"
+                  ],
+                  "auditories": [
+                    {
+                      "name": "401",
+                      "building": {
+                        "name": "3-й учебный корпус"
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "intent_remove": false
+    },
+    "session": {
+      "group": "3530901/80203",
+      "faculty": "ИКНТ"
+    }
+  },
+  "version": "1.0"
+}
+
 ]
