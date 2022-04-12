@@ -194,7 +194,7 @@ def gather_teacher(event, rv, sp, possible_replies):
 def gather_info(event, response_json, teacher, faculty, group, sp, possible_requests, possible_replies):
     rv = request_validation.RequestValidator()
     answer = event['request']['original_utterance'].lower()
-    intents = event['request']['nlu']
+    intents = event['request']['nlu'].get('intents')
     group_request = intents.get('group_schedule')
     teacher_request = intents.get('teacher_schedule')
     if group_request:

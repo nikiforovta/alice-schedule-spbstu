@@ -60,7 +60,8 @@
               "day_is_relative": true
             }
           }
-        ]
+        ],
+        "intents": {}
       },
       "original_utterance": "2022-2-5"
     },
