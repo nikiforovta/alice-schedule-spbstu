@@ -1,6 +1,7 @@
 import datetime
 
 import requests
+from fuzzywuzzy import fuzz
 
 
 class ScheduleParser:
@@ -34,6 +35,10 @@ class ScheduleParser:
                 return False
         return False
 
+    def set_faculty_by_id(self, faculty_id):
+        self.faculty = faculty_id
+        pass
+
     def set_group(self, group):
         GROUP_DICT = self.get_groups()
         self.group = next((item['id'] for item in GROUP_DICT if item['name'] == group), None) if GROUP_DICT else None
@@ -60,10 +65,28 @@ class ScheduleParser:
         teachers = self.get_info(f'search/teachers?q={teacher}')
         return teachers['teachers']
 
-    def get_groups(self):
+    def get_groups(self, faculty=None):
         if self.faculty:
             groups = self.get_info(f'faculties/{self.faculty}/groups')
             return groups['groups']
+        elif faculty:
+            groups = self.get_info(f'faculties/{faculty}/groups')
+            return groups['groups']
+        return None
+
+    def find_group(self, faculty=None, type=None, level=None, spec=None, group_number=None, degree=None):
+        if faculty and degree:
+            groups = self.get_groups(faculty['value'])
+            degree_list = ['bachelor', 'master']
+            degree = degree_list.index(degree['value'])
+        else:
+            return None
+        for group in groups:
+            group_spec = ' '.join(group['spec'].split(" ")[1:]).lower()
+            if group['level'] == level['value'] and group['type'] == type['value'] \
+                    and fuzz.token_sort_ratio(group_spec, spec['value']) > 75 \
+                    and group['name'][-1] == str(group_number['value']) and group['kind'] == degree:
+                return group
         return None
 
     def compact_day(self, schedule_day):
@@ -100,8 +123,8 @@ class ScheduleParser:
             compact_week[i] = self.compact_day(schedule_week[i])
         return compact_week
 
-    def get_schedule(self, date=datetime.datetime.now().strftime("%Y-%m-%d")):
-        search = f'teachers/{self.teacher}/scheduler' if self.teacher else f'scheduler/{self.group}'
+    def get_schedule(self, date=datetime.datetime.now().strftime("%Y-%m-%d"), for_teacher=True):
+        search = f'teachers/{self.teacher}/scheduler' if for_teacher else f'scheduler/{self.group}'
         search += f'?date={date}'
         schedule = self.get_info(search)
         return self.compact_day(next((item for item in schedule['days'] if item['date'] == date), None))

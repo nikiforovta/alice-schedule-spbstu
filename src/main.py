@@ -20,7 +20,7 @@ def generate_response(event):
             'buttons': [],
         },
         'user_state_update': {},
-        'application_state': {}
+        'session_state': event['state']['session']
     }
 
 
@@ -40,25 +40,24 @@ def greeting(teacher, faculty, group, possible_greetings):
 
 
 def handler(event, context, requests="requests.yaml", replies="replies.yaml"):
-    teacher = event['state']['application'].get('teacher')
-    faculty = event['state']['application'].get('faculty')
-    group = event['state']['application'].get('group')
+    teacher = event['state']['session'].get('teacher')
+    faculty = event['state']['session'].get('faculty')
+    group = event['state']['session'].get('group')
     sp = schedule_parser.ScheduleParser(teacher, faculty, group)
     background_sp = schedule_parser.ScheduleParser()
     response_json = generate_response(event)
-    response_json['application_state']['group'] = group if group else None
-    response_json['application_state']['faculty'] = faculty if faculty else None
+    response_json['session_state']['group'] = group if group else None
+    response_json['session_state']['faculty'] = faculty if faculty else None
     with open(requests, "r", encoding='utf8') as preq:
-        with open(replies, "r", encoding='utf8') as prep:
-            possible_requests = yaml.safe_load(preq)
-            possible_replies = yaml.safe_load(prep)
-        if event['session']['new']:
-            (response_json['response']['text'], response_json['response']['tts']) = greeting(teacher, faculty, group,
-                                                                                             possible_replies[
-                                                                                                 "GREETING"])
-            threading.Thread(target=group_operations.update_schedule, args=(event, background_sp))
-        output_text, output_tts = gather_info(event, response_json, teacher, faculty, group, sp, possible_requests,
-                                              possible_replies)
-        response_json['response']['text'] += output_text
-        response_json['response']['tts'] += output_tts
-        return json.dumps(response_json)
+        possible_requests = yaml.safe_load(preq)
+    with open(replies, "r", encoding='utf8') as prep:
+        possible_replies = yaml.safe_load(prep)
+    if event['session']['new']:
+        (response_json['response']['text'], response_json['response']['tts']) = greeting(teacher, faculty, group,
+                                                                                         possible_replies["GREETING"])
+        threading.Thread(target=group_operations.update_schedule, args=(event, background_sp))
+    output_text, output_tts = gather_info(event, response_json, teacher, faculty, group, sp, possible_requests,
+                                          possible_replies)
+    response_json['response']['text'] += output_text
+    response_json['response']['tts'] += output_tts
+    return json.dumps(response_json)
