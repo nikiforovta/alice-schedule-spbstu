@@ -1,10 +1,9 @@
 import json
+import os.path
 import random
-import threading
 
 import yaml
 
-import group_operations
 import schedule_parser
 from data_gathering import gather_info
 
@@ -24,10 +23,7 @@ def generate_response(event):
     }
 
 
-def greeting(teacher, faculty, group, possible_greetings):
-    if teacher is not None:
-        reply = random.choice(possible_greetings['OK']['TEACHER'])
-        return f"{reply} {teacher}", f"{reply} {teacher}"
+def greeting(faculty, group, possible_greetings):
     if faculty is not None:
         if group is not None:
             reply = random.choice(possible_greetings['OK']['GROUP'])
@@ -39,11 +35,12 @@ def greeting(teacher, faculty, group, possible_greetings):
     return reply, reply
 
 
-def handler(event, context, requests="requests.yaml", replies="replies.yaml"):
-    teacher = event['state']['session'].get('teacher')
+def handler(event, context,
+            requests=os.path.join(os.path.abspath(os.path.join(__file__, os.path.pardir)), "requests.yaml"),
+            replies=os.path.join(os.path.abspath(os.path.join(__file__, os.path.pardir)), "replies.yaml")):
     faculty = event['state']['session'].get('faculty')
     group = event['state']['session'].get('group')
-    sp = schedule_parser.ScheduleParser(teacher, faculty, group)
+    sp = schedule_parser.ScheduleParser(faculty, group)
     background_sp = schedule_parser.ScheduleParser()
     response_json = generate_response(event)
     response_json['session_state']['group'] = group if group else None
@@ -53,11 +50,9 @@ def handler(event, context, requests="requests.yaml", replies="replies.yaml"):
     with open(replies, "r", encoding='utf8') as prep:
         possible_replies = yaml.safe_load(prep)
     if event['session']['new']:
-        (response_json['response']['text'], response_json['response']['tts']) = greeting(teacher, faculty, group,
+        (response_json['response']['text'], response_json['response']['tts']) = greeting(faculty, group,
                                                                                          possible_replies["GREETING"])
-        threading.Thread(target=group_operations.update_schedule, args=(event, background_sp))
-    output_text, output_tts = gather_info(event, response_json, teacher, faculty, group, sp, possible_requests,
-                                          possible_replies)
+    output_text, output_tts = gather_info(event, response_json, faculty, group, sp, possible_requests, possible_replies)
     response_json['response']['text'] += output_text
     response_json['response']['tts'] += output_tts
     return json.dumps(response_json)

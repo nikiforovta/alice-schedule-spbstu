@@ -7,11 +7,12 @@ import request_validation
 import schedule_to_speech
 from buttons import date_buttons, faculty_buttons
 from group_operations import remove_group_options, save_group, list_groups, remove_group
-from recognition import group_recognition, teacher_recognition
+from recognition import group_recognition
 
 
 def reset_settings(event, response_json, sp, possible_reset):
     response_json['session_state'] = None
+    response_json['application_state'] = None
     user_settings = event['state'].get('user')
     if user_settings:
         for k in user_settings.keys():
@@ -30,7 +31,7 @@ def gather_date(event, response_json, sp, possible_replies):
     if date is not None:
         date = datetime_operations.translate_datetime(date)
         if date is not None:
-            (output_text, output_tts) = schedule_to_speech.translate(sp.get_schedule(date, for_teacher=False), date)
+            (output_text, output_tts) = schedule_to_speech.translate(sp.get_schedule(date), date)
             tip = random.choice(possible_replies['TIP'])
             output_text += tip
             output_tts += tip
@@ -52,7 +53,7 @@ def gather_group(event, response_json, faculty, group, sp, rv, possible_requests
 
     if group:
         if event['session']['new']:
-            (output_text, output_tts) = schedule_to_speech.translate(sp.get_schedule(for_teacher=False))
+            (output_text, output_tts) = schedule_to_speech.translate(sp.get_schedule())
             tip = random.choice(possible_replies['TIP'])
             output_text += tip
             output_tts += tip
@@ -60,7 +61,7 @@ def gather_group(event, response_json, faculty, group, sp, rv, possible_requests
             if any([list_request in answer for list_request in possible_requests['LIST']]):
                 (output_text, output_tts) = list_groups(event, possible_replies, tip=True)
             elif any([save_request in answer for save_request in possible_requests['SAVE']]):
-                (output_text, output_tts) = save_group(event, response_json, sp)
+                (output_text, output_tts) = save_group(event, response_json)
             elif any([remove_request in answer for remove_request in possible_requests['REMOVE']]):
                 (output_text, output_tts) = remove_group_options(event, response_json, possible_replies)
             else:
@@ -75,7 +76,7 @@ def gather_group(event, response_json, faculty, group, sp, rv, possible_requests
         elif group_search == 1:
             sp.set_group(possible_group)
             response_json['session_state']['group'] = possible_group
-            (output_text, output_tts) = schedule_to_speech.translate(sp.get_schedule(for_teacher=False))
+            (output_text, output_tts) = schedule_to_speech.translate(sp.get_schedule())
             tip = random.choice(possible_replies['TIP'])
             output_text += tip
             output_tts += tip
@@ -105,29 +106,9 @@ def gather_group_schedule(sp, request):
         sp.set_group(group['name'])
         if date:
             date = datetime_operations.translate_datetime(date)
-            (output_text, output_tts) = schedule_to_speech.translate(sp.get_schedule(date, for_teacher=False))
+            (output_text, output_tts) = schedule_to_speech.translate(sp.get_schedule(date))
         else:
-            (output_text, output_tts) = schedule_to_speech.translate(sp.get_schedule(for_teacher=False))
-    return output_text, output_tts
-
-
-def gather_teacher_schedule(rv, sp, request):
-    output_text = ""
-    output_tts = ""
-    date = request.get('date')
-    name = request.get('name')
-    if name:
-        possible_teacher = teacher_recognition(name['value'])
-        if possible_teacher != "":
-            found = rv.validate_teacher(possible_teacher)
-            if found == 1:
-                sp.set_teacher(possible_teacher)
-                (output_text, output_tts) = schedule_to_speech.translate(sp.get_schedule(date))
-            elif found > 1:
-                (output_text,
-                 output_tts) = "Слишком много совпадений, уточните запрос", "Слишком много совпадений, уточните запрос"
-            else:
-                (output_text, output_tts) = "Преподаватель не найден", "Преподаватель не найден"
+            (output_text, output_tts) = schedule_to_speech.translate(sp.get_schedule())
     return output_text, output_tts
 
 
@@ -157,13 +138,6 @@ def gather_faculty_change(sp, response_json, possible_replies):
     return reply, reply
 
 
-def gather_teacher_change(sp, response_json, possible_replies):
-    sp.set_teacher(None)
-    response_json['session_state']['teacher'] = None
-    reply = random.choice(possible_replies["INQUIRY"]["TEACHER"])
-    return reply, reply
-
-
 def gather_group_change(sp, response_json, possible_replies):
     sp.set_group(None)
     response_json['session_state']['group'] = None
@@ -171,36 +145,13 @@ def gather_group_change(sp, response_json, possible_replies):
     return reply, reply
 
 
-def gather_teacher(event, rv, sp, possible_replies):
-    possible_fio = event['request']['nlu']['entities']
-    possible_teacher = ""
-    for pf in possible_fio:
-        if pf['type'] == "YANDEX.FIO":
-            possible_teacher = teacher_recognition(pf['value'])
-            break
-    if possible_teacher != "":
-        found = rv.validate_teacher(possible_teacher)
-        if found == 1:
-            sp.set_teacher(possible_teacher)
-            return schedule_to_speech.translate(sp.get_schedule())
-        elif found > 1:
-            reply = random.choice(possible_replies["TEACHER_NOT_FOUND"]["TOO_MANY_FOUND"])
-            return reply, reply
-        else:
-            reply = random.choice(possible_replies["TEACHER_NOT_FOUND"]["NO_MATCHES"])
-            return reply, reply
-
-
-def gather_info(event, response_json, teacher, faculty, group, sp, possible_requests, possible_replies):
+def gather_info(event, response_json, faculty, group, sp, possible_requests, possible_replies):
     rv = request_validation.RequestValidator()
     answer = event['request']['original_utterance'].lower()
     intents = event['request']['nlu'].get('intents')
     group_request = intents.get('group_schedule')
-    teacher_request = intents.get('teacher_schedule')
     if group_request:
         output_text, output_tts = gather_group_schedule(sp, group_request['slots'])
-    elif teacher_request:
-        output_text, output_tts = gather_teacher_schedule(rv, sp, teacher_request['slots'])
     else:
         if any([stop_request in answer for stop_request in possible_requests['STOP']]):
             response_json['response']['end_session'] = True
@@ -213,13 +164,6 @@ def gather_info(event, response_json, teacher, faculty, group, sp, possible_requ
             output_text, output_tts = gather_remove(event, response_json, possible_replies)
         elif any([reset_request in answer for reset_request in possible_requests['RESET']]):
             (output_text, output_tts) = reset_settings(event, response_json, sp, possible_replies["RESET"])
-        elif teacher:
-            if fuzz.token_sort_ratio(answer, "смена преподавателя") > 75:
-                output_text, output_tts = gather_teacher_change(sp, response_json, possible_replies)
-            else:
-                (output_text, output_tts) = gather_date(event, response_json, sp, possible_replies)
-        elif len([x for x in event['request']['nlu']['entities'] if x['type'] == "YANDEX.FIO"]) > 0:
-            (output_text, output_tts) = gather_teacher(event, rv, sp, possible_replies)
         elif faculty:
             if fuzz.token_sort_ratio(answer, "смена группы") > 75:
                 output_text, output_tts = gather_group_change(sp, response_json, possible_replies)
@@ -230,7 +174,7 @@ def gather_info(event, response_json, teacher, faculty, group, sp, possible_requ
                                                          possible_requests, possible_replies)
         elif rv.validate_faculty(answer):
             response_json['session_state']['faculty'] = sp.ABBR_CONVERSION[answer] if sp.set_faculty(answer) else \
-            sp.NAME_ABBR[answer]
+                sp.NAME_ABBR[answer]
             output_text, output_tts = "И номер группы.", "И номер группы."
         elif answer == "":
             output_text, output_tts = "", ""

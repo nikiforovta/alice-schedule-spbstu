@@ -19,7 +19,3 @@ def group_recognition(tokens):
     except IndexError:
         return None
     return group
-
-
-def teacher_recognition(value):
-    return f'{value.get("last_name", "")} {value.get("first_name", "")} {value.get("patronymic_name", "")}'
