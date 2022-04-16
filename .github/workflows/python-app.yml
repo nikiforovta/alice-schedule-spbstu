@@ -32,10 +32,18 @@ jobs:
         coverage run -m pytest
     
     - name: Upload Coverage to Codecov
-      uses: codecov/codecov-action@v2
-      with:
-        token: ${{ secrets.CODECOV_TOKEN }}
-        verbose: true
+      env:
+        CODECOV_TOKEN: ${{secrets.CODECOV_TOKEN}}
+      run: | 
+       curl -Os https://uploader.codecov.io/latest/linux/codecov
+       find . -iregex "codecov.*"
+       chmod +x codecov 
+       ./codecov -t ${CODECOV_TOKEN}
+      
+#     - uses: codecov/codecov-action@v2
+#       with:
+#         token: ${{ secrets.CODECOV_TOKEN }}
+#         verbose: true
     
     - uses: goodsmileduck/yandex-serverless-action@v1
       with:
