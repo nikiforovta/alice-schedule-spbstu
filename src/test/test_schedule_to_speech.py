@@ -7,7 +7,7 @@ import schedule_to_speech
 
 
 def test_translate(repo_root):
-    with open(os.path.join(repo_root, "schedule.json"), "rb") as schedule:
+    with open(os.path.join(repo_root, "test/schedule.json"), "rb") as schedule:
         for day in json.load(schedule):
             assert schedule_to_speech.translate_day(day, current=False)[0] == day['result']
 

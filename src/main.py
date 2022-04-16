@@ -41,7 +41,6 @@ def handler(event, context,
     faculty = event['state']['session'].get('faculty')
     group = event['state']['session'].get('group')
     sp = schedule_parser.ScheduleParser(faculty, group)
-    background_sp = schedule_parser.ScheduleParser()
     response_json = generate_response(event)
     response_json['session_state']['group'] = group if group else None
     response_json['session_state']['faculty'] = faculty if faculty else None

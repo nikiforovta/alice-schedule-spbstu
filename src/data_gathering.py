@@ -151,7 +151,7 @@ def gather_info(event, response_json, faculty, group, sp, possible_requests, pos
     intents = event['request']['nlu'].get('intents')
     group_request = intents.get('group_schedule')
     if group_request:
-        output_text, output_tts = gather_group_schedule(sp, group_request['slots'])
+        return gather_group_schedule(sp, group_request['slots'])
     else:
         if any([stop_request in answer for stop_request in possible_requests['STOP']]):
             response_json['response']['end_session'] = True
