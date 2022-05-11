@@ -2,12 +2,12 @@ import random
 
 from fuzzywuzzy import fuzz
 
-import datetime_operations
-import request_validation
-import schedule_to_speech
-from buttons import date_buttons, faculty_buttons
-from group_operations import remove_group_options, save_group, list_groups, remove_group
-from recognition import group_recognition
+from ..src import datetime_operations
+from ..src import request_validation
+from ..src import schedule_to_speech
+from ..src.buttons import date_buttons, faculty_buttons
+from ..src.group_operations import remove_group_options, save_group, list_groups, remove_group
+from ..src.recognition import group_recognition
 
 
 def reset_settings(event, response_json, sp, possible_reset):
@@ -27,9 +27,9 @@ def reset_settings(event, response_json, sp, possible_reset):
 
 
 def gather_date(event, response_json, sp, possible_replies):
-    date = next((item for item in event['request']['nlu']['entities'] if item['type'] == "YANDEX.DATETIME"), None)
-    if date is not None:
-        date = datetime_operations.translate_datetime(date)
+    day = event['request']['original_utterance'].lower()
+    if day is not None:
+        date = datetime_operations.translate_date_marussia(day)
         if date is not None:
             (output_text, output_tts) = schedule_to_speech.translate(sp.get_schedule(date), date)
             tip = random.choice(possible_replies['TIP'])
@@ -39,7 +39,7 @@ def gather_date(event, response_json, sp, possible_replies):
             reply = random.choice(possible_replies["DATE"]["INCORRECT"])
             output_text = reply
             output_tts = reply
-            response_json['response']['end_session'] = True
+        date_buttons(response_json)
     else:
         reply = random.choice(possible_replies["DATE"]["INCORRECT"])
         output_text = reply
@@ -149,9 +149,10 @@ def gather_info(event, response_json, faculty, group, sp, possible_requests, pos
     rv = request_validation.RequestValidator()
     answer = event['request']['original_utterance'].lower()
     intents = event['request']['nlu'].get('intents')
-    group_request = intents.get('group_schedule')
-    if group_request:
-        return gather_group_schedule(sp, group_request['slots'])
+    if intents:
+        group_request = intents.get('group_schedule')
+        if group_request:
+            return gather_group_schedule(sp, group_request['slots'])
     else:
         if any([stop_request in answer for stop_request in possible_requests['STOP']]):
             response_json['response']['end_session'] = True

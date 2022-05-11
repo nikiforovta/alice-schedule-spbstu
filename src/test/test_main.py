@@ -1,7 +1,7 @@
 import json
 import os.path
 
-import main
+import app
 
 
 def test_handler(repo_root):

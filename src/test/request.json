@@ -278,52 +278,6 @@
       "new": false
     },
     "request": {
-      "command": "новопашенный андрей гелиевич",
-      "original_utterance": "новопашенный андрей гелиевич",
-      "nlu": {
-        "tokens": [
-          "новопашенный",
-          "андрей",
-          "гелиевич"
-        ],
-        "entities": [
-          {
-            "type": "YANDEX.FIO",
-            "tokens": {
-              "start": 0,
-              "end": 3
-            },
-            "value": {
-              "first_name": "андрей",
-              "patronymic_name": "гелиевич",
-              "last_name": "новопашенный"
-            }
-          }
-        ],
-        "intents": {}
-      }
-    },
-    "state": {
-      "user": {
-        "saved_groups": [
-          {
-            "faculty": "ИКНТ",
-            "group": "3530901/80203"
-          }
-        ]
-      },
-      "session": {
-        "group": "3530901/80203",
-        "faculty": "ИКНТ"
-      }
-    },
-    "version": "1.0"
-  },
-  {
-    "session": {
-      "new": false
-    },
-    "request": {
       "command": "икнт",
       "original_utterance": "икнт",
       "nlu": {
@@ -517,16 +471,6 @@
     "version": "1.0"
   },
   {
-    "meta": {
-      "locale": "ru-RU",
-      "timezone": "UTC",
-      "client_id": "ru.yandex.searchplugin/7.16 (none none; android 4.4.2)",
-      "interfaces": {
-        "screen": {},
-        "payments": {},
-        "account_linking": {}
-      }
-    },
     "session": {
       "new": false
     },

@@ -1,4 +1,4 @@
-import schedule_parser
+from ..src import schedule_parser
 
 
 class RequestValidator:

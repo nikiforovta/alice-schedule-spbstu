@@ -4,6 +4,20 @@ import time
 from dateutil.relativedelta import relativedelta
 
 
+def translate_date_marussia(day):
+    if day == 'вчера':
+        nowadays = datetime.datetime.now()
+        return (datetime.datetime(nowadays.year, nowadays.month, day) + relativedelta(days=-1)).strftime("%Y-%m-%d")
+    elif day == 'сегодня':
+        nowadays = datetime.datetime.now()
+        return nowadays.strftime("%Y-%m-%d")
+    elif day == 'завтра':
+        nowadays = datetime.datetime.now()
+        return (datetime.datetime(nowadays.year, nowadays.month, day) + relativedelta(days=1)).strftime("%Y-%m-%d")
+    else:
+        return None
+
+
 def translate_datetime(date):
     now = datetime.datetime.now()
     dy, dm, dd = 0, 0, 0
