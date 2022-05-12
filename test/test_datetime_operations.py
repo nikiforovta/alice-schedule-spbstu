@@ -4,7 +4,7 @@ import pytest
 from dateutil.relativedelta import relativedelta
 from dateutil.utils import today
 
-from datetime_operations import translate_datetime
+from src.datetime_operations import translate_datetime
 
 
 @pytest.mark.parametrize("relative_datetime, result", [({"value": {"day": -1, "day_is_relative": True}},

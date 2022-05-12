@@ -5,15 +5,13 @@ from dateutil.relativedelta import relativedelta
 
 
 def translate_date_marussia(day):
+    nowadays = datetime.datetime.now()
     if day == 'вчера':
-        nowadays = datetime.datetime.now()
-        return (datetime.datetime(nowadays.year, nowadays.month, day) + relativedelta(days=-1)).strftime("%Y-%m-%d")
+        return (datetime.datetime(nowadays.year, nowadays.month, nowadays.day) + relativedelta(days=-1)).strftime("%Y-%m-%d")
     elif day == 'сегодня':
-        nowadays = datetime.datetime.now()
         return nowadays.strftime("%Y-%m-%d")
     elif day == 'завтра':
-        nowadays = datetime.datetime.now()
-        return (datetime.datetime(nowadays.year, nowadays.month, day) + relativedelta(days=1)).strftime("%Y-%m-%d")
+        return (datetime.datetime(nowadays.year, nowadays.month, nowadays.day) + relativedelta(days=1)).strftime("%Y-%m-%d")
     else:
         return None
 

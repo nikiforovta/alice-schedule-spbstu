@@ -2,12 +2,12 @@ import random
 
 from fuzzywuzzy import fuzz
 
-from ..src import datetime_operations
-from ..src import request_validation
-from ..src import schedule_to_speech
-from ..src.buttons import date_buttons, faculty_buttons
-from ..src.group_operations import remove_group_options, save_group, list_groups, remove_group
-from ..src.recognition import group_recognition
+from src import datetime_operations
+from src import request_validation
+from src import schedule_to_speech
+from src.buttons import date_buttons, faculty_buttons
+from src.group_operations import remove_group_options, save_group, list_groups, remove_group
+from src.recognition import group_recognition
 
 
 def reset_settings(event, response_json, sp, possible_reset):

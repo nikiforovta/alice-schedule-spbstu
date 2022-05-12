@@ -1,6 +1,6 @@
 import pytest
 
-from recognition import group_recognition
+from src.recognition import group_recognition
 
 
 @pytest.mark.parametrize("answer, possible_group", [
@@ -10,6 +10,7 @@ from recognition import group_recognition
     (["353", "0901", "косая", "черта", "80", "203"], "3530901/80203"),
     (["353", "0902", ",", "81565"], "3530902/81565"),
     (["353", "09", "01", "8", "0", "2", "0", "3"], "3530901/80203"),
-    (['ooooo'], None), (['ooooooooooooo'], "oooooooo/ooooo")])
+    (['ooooo'], None),
+    (['ooooooooooooo'], "oooooooo/ooooo")])
 def test_group_recognition(answer, possible_group):
     assert group_recognition(answer) == possible_group
