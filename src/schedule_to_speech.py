@@ -1,7 +1,7 @@
 import datetime
 from time import strptime
 
-from src.datetime_operations import lessons_time
+from ..src.datetime_operations import lessons_time
 
 WEEKDAY_LIST = ["понедельник ", "вторник ", "среду ", "четверг ", "пятницу ", "субботу ", "воскресенье "]
 MONTH_LIST = ["января ", "февраля ", "марта ", "апреля ", "мая ", "июня ", "июля ", "августа ", "сентября ", "октября ",

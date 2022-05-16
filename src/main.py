@@ -4,8 +4,8 @@ import random
 
 import yaml
 
-from src import schedule_parser
-from src.data_gathering import gather_info
+from ..src import schedule_parser
+from ..src.data_gathering import gather_info
 
 
 def generate_response(event):

@@ -1,19 +1,12 @@
 import datetime
 import time
 
+import dateparser
 from dateutil.relativedelta import relativedelta
 
 
 def translate_date_marussia(day):
-    nowadays = datetime.datetime.now()
-    if day == 'вчера':
-        return (datetime.datetime(nowadays.year, nowadays.month, nowadays.day) + relativedelta(days=-1)).strftime("%Y-%m-%d")
-    elif day == 'сегодня':
-        return nowadays.strftime("%Y-%m-%d")
-    elif day == 'завтра':
-        return (datetime.datetime(nowadays.year, nowadays.month, nowadays.day) + relativedelta(days=1)).strftime("%Y-%m-%d")
-    else:
-        return None
+    return dateparser.parser(day)
 
 
 def translate_datetime(date):
