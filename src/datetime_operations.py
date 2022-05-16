@@ -6,7 +6,7 @@ from dateutil.relativedelta import relativedelta
 
 
 def translate_date_marussia(day):
-    return dateparser.parser(day)
+    return dateparser.parse(day).strftime("%Y-%m-%d")
 
 
 def translate_datetime(date):
