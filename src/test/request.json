@@ -16,14 +16,14 @@
       "user": {},
       "session": {}
     },
-    "version": "1.0"
+    "version": "Сброс всех настроек при запуске навыка при отсутствии настроек"
   },
   {
     "session": {
       "new": false
     },
     "request": {
-      "command": "ИКНТ",
+      "command": "",
       "original_utterance": "3530901/80203",
       "nlu": {
         "tokens": [
@@ -40,7 +40,7 @@
         "faculty": "ИКНТ"
       }
     },
-    "version": "1.0"
+    "version": "Выбор группы"
   },
   {
     "session": {
@@ -72,7 +72,7 @@
         "group": "3530901/80203"
       }
     },
-    "version": "1.0"
+    "version": "Выбор даты"
   },
   {
     "session": {
@@ -113,7 +113,7 @@
         "group": "3530901/80203"
       }
     },
-    "version": "1.0"
+    "version": "Удаление первой сохраненной группы"
   },
   {
     "session": {
@@ -146,7 +146,7 @@
         "group": "3530203/10002"
       }
     },
-    "version": "1.0"
+    "version": "Сохранение второй группы"
   },
   {
     "session": {
@@ -176,7 +176,7 @@
         "faculty": null
       }
     },
-    "version": "1.0"
+    "version": "Вывод расписания сохраненной группы при запуске навыка"
   },
   {
     "session": {
@@ -217,37 +217,7 @@
         "faculty": "ИКНТ"
       }
     },
-    "version": "1.0"
-  },
-  {
-    "session": {
-      "new": true
-    },
-    "request": {
-      "command": "",
-      "original_utterance": "",
-      "nlu": {
-        "tokens": [],
-        "entities": [],
-        "intents": {}
-      }
-    },
-    "state": {
-      "user": {
-        "saved_groups": [
-          {
-            "faculty": "ИКНТ",
-            "group": "3530901/80203"
-          }
-        ],
-        "intent_remove": false
-      },
-      "session": {
-        "group": null,
-        "faculty": "ИКНТ"
-      }
-    },
-    "version": "1.0"
+    "version": "Выбор группы"
   },
   {
     "session": {
@@ -271,53 +241,7 @@
         "faculty": "ИКНТ"
       }
     },
-    "version": "1.0"
-  },
-  {
-    "session": {
-      "new": false
-    },
-    "request": {
-      "command": "новопашенный андрей гелиевич",
-      "original_utterance": "новопашенный андрей гелиевич",
-      "nlu": {
-        "tokens": [
-          "новопашенный",
-          "андрей",
-          "гелиевич"
-        ],
-        "entities": [
-          {
-            "type": "YANDEX.FIO",
-            "tokens": {
-              "start": 0,
-              "end": 3
-            },
-            "value": {
-              "first_name": "андрей",
-              "patronymic_name": "гелиевич",
-              "last_name": "новопашенный"
-            }
-          }
-        ],
-        "intents": {}
-      }
-    },
-    "state": {
-      "user": {
-        "saved_groups": [
-          {
-            "faculty": "ИКНТ",
-            "group": "3530901/80203"
-          }
-        ]
-      },
-      "session": {
-        "group": "3530901/80203",
-        "faculty": "ИКНТ"
-      }
-    },
-    "version": "1.0"
+    "version": "Сброс настроек при запуске навыка и при наличии сохраненной группы"
   },
   {
     "session": {
@@ -341,31 +265,11 @@
         "faculty": null
       }
     },
-    "version": "1.0"
+    "version": "Выбор института"
   },
   {
-    "meta": {
-      "locale": "ru-RU",
-      "timezone": "UTC",
-      "client_id": "ru.yandex.searchplugin/7.16 (none none; android 4.4.2)",
-      "interfaces": {
-        "screen": {},
-        "payments": {},
-        "account_linking": {}
-      }
-    },
     "session": {
-      "message_id": 3,
-      "session_id": "6e62ac35-5e3e-4f9c-8730-1cf357c6fcdd",
-      "skill_id": "b4650c20-82ab-45ad-bd26-d2aae92e40ea",
-      "user": {
-        "user_id": "9412254570D58A0F1F0CF25FEC75B20D09C3B0F3AA4DA94F49557F801C160685"
-      },
-      "session": {
-        "session_id": "4FF410F6BC3708F9CD20BB8BBFAF817038ECF4206969F3FD11836D83F95BD6CE"
-      },
-      "new": false,
-      "user_id": "4FF410F6BC3708F9CD20BB8BBFAF817038ECF4206969F3FD11836D83F95BD6CE"
+      "new": false
     },
     "request": {
       "command": "сохрани группу",
@@ -393,7 +297,7 @@
         "faculty": "ИКНТ"
       }
     },
-    "version": "1.0"
+    "version": "Сохранение группы"
   },
   {
     "session": {
@@ -483,7 +387,7 @@
         "faculty": "ИКНТ"
       }
     },
-    "version": "1.0"
+    "version": "Улучшенная версия"
   },
   {
     "session": {
@@ -514,19 +418,9 @@
         ]
       }
     },
-    "version": "1.0"
+    "version": "Вывод сохраненных групп"
   },
   {
-    "meta": {
-      "locale": "ru-RU",
-      "timezone": "UTC",
-      "client_id": "ru.yandex.searchplugin/7.16 (none none; android 4.4.2)",
-      "interfaces": {
-        "screen": {},
-        "payments": {},
-        "account_linking": {}
-      }
-    },
     "session": {
       "new": false
     },
@@ -554,6 +448,6 @@
         ]
       }
     },
-    "version": "1.0"
+    "version": "Запрос удаления группы"
   }
 ]

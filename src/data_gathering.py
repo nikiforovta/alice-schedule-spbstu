@@ -153,11 +153,7 @@ def gather_info(event, response_json, faculty, group, sp, possible_requests, pos
     if group_request:
         return gather_group_schedule(sp, group_request['slots'])
     else:
-        if any([stop_request in answer for stop_request in possible_requests['STOP']]):
-            response_json['response']['end_session'] = True
-            reply = random.choice(possible_replies['STOP'])
-            output_text, output_tts = reply, reply
-        elif any([help_request in answer for help_request in possible_requests['HELP']]):
+        if any([help_request in answer for help_request in possible_requests['HELP']]):
             reply = random.choice(possible_replies['HELP'])
             output_text, output_tts = reply, reply
         elif event['state']['user'].get('intent_remove'):
