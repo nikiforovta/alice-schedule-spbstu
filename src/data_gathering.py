@@ -39,7 +39,6 @@ def gather_date(event, response_json, sp, possible_replies):
             reply = random.choice(possible_replies["DATE"]["INCORRECT"])
             output_text = reply
             output_tts = reply
-        date_buttons(response_json)
     else:
         reply = random.choice(possible_replies["DATE"]["INCORRECT"])
         output_text = reply
