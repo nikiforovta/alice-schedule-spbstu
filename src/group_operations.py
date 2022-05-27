@@ -41,11 +41,15 @@ def list_groups(event, possible_replies, tip=None):
 
 
 def remove_group(event, response_json, index):
-    _, g = event['state']['user']['saved_groups'][index - 1].values()
-    output_text = f"Группа {g} удалена"
-    output_tts = f"Группа {' '.join(g)} удалена"
-    del event['state']['user']['saved_groups'][index - 1]
-    response_json['user_state_update']['saved_groups'] = event['state']['user']['saved_groups']
+    try:
+        _, g = event['state']['user']['saved_groups'][index - 1].values()
+        output_text = f"Группа {g} удалена"
+        output_tts = f"Группа {' '.join(g)} удалена"
+        del event['state']['user']['saved_groups'][index - 1]
+        response_json['user_state_update']['saved_groups'] = event['state']['user']['saved_groups']
+    except IndexError:
+        output_text = "Такая группа не сохранена."
+        output_tts = output_text
     return output_text, output_tts
 
 
