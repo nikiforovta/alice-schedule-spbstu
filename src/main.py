@@ -30,7 +30,7 @@ def greeting(faculty, group, possible_greetings):
             return f"{reply} {group} ({faculty}).\n", f"{reply} {' '.join(group)} ({' '.join(faculty)}). "
         else:
             reply = random.choice(possible_greetings['NO_GROUP'])
-            return f"{reply} {faculty}).", f"{reply} {' '.join(faculty)}). "
+            return f"{reply}{faculty}).", f"{reply}{' '.join(faculty)}). "
     reply = random.choice(possible_greetings['NO_DATA'])
     return reply, reply
 

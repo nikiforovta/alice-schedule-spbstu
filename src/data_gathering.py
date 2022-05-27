@@ -89,28 +89,6 @@ def gather_group(event, response_json, faculty, group, sp, rv, possible_requests
     return output_text, output_tts
 
 
-def gather_group_schedule(sp, request):
-    date = request.get('date')
-    degree = request.get('degree')
-    course = request.get('course')
-    faculty = request.get('faculty')
-    type = request.get('type')
-    spec = request.get('spec')
-    group_number = request.get('group')
-    output_text = ""
-    output_tts = ""
-    group = sp.find_group(faculty=faculty, type=type, level=course, spec=spec, group_number=group_number, degree=degree)
-    if group:
-        sp.set_faculty_by_id(faculty['value'])
-        sp.set_group(group['name'])
-        if date:
-            date = datetime_operations.translate_datetime(date)
-            (output_text, output_tts) = schedule_to_speech.translate(sp.get_schedule(date))
-        else:
-            (output_text, output_tts) = schedule_to_speech.translate(sp.get_schedule())
-    return output_text, output_tts
-
-
 def gather_remove(event, response_json, possible_replies):
     possible_index = event['request']['nlu']['entities']
     index = -1
@@ -147,40 +125,34 @@ def gather_group_change(sp, response_json, possible_replies):
 def gather_info(event, response_json, faculty, group, sp, possible_requests, possible_replies):
     rv = request_validation.RequestValidator()
     answer = event['request']['original_utterance'].lower()
-    intents = event['request']['nlu'].get('intents')
-    if intents:
-        group_request = intents.get('group_schedule')
-        if group_request:
-            return gather_group_schedule(sp, group_request['slots'])
-    else:
-        if any([stop_request in answer for stop_request in possible_requests['STOP']]):
-            response_json['response']['end_session'] = True
-            reply = random.choice(possible_replies['STOP'])
-            output_text, output_tts = reply, reply
-        elif any([help_request in answer for help_request in possible_requests['HELP']]):
-            reply = random.choice(possible_replies['HELP'])
-            output_text, output_tts = reply, reply
-        elif event['state']['user'].get('intent_remove'):
-            output_text, output_tts = gather_remove(event, response_json, possible_replies)
-        elif any([reset_request in answer for reset_request in possible_requests['RESET']]):
-            (output_text, output_tts) = reset_settings(event, response_json, sp, possible_replies["RESET"])
-        elif faculty:
-            if fuzz.token_sort_ratio(answer, "смена группы") > 75:
-                output_text, output_tts = gather_group_change(sp, response_json, possible_replies)
-            elif fuzz.token_sort_ratio(answer, "смена института") > 75:
-                output_text, output_tts = gather_faculty_change(sp, response_json, possible_replies)
-            else:
-                (output_text, output_tts) = gather_group(event, response_json, faculty, group, sp, rv,
-                                                         possible_requests, possible_replies)
-        elif rv.validate_faculty(answer):
-            response_json['session_state']['faculty'] = sp.ABBR_CONVERSION[answer] if sp.set_faculty(answer) else \
-                sp.NAME_ABBR[answer]
-            output_text, output_tts = "И номер группы.", "И номер группы."
-        elif answer == "":
-            output_text, output_tts = "", ""
-            faculty_buttons(sp, response_json)
+    if any([stop_request in answer for stop_request in possible_requests['STOP']]):
+        response_json['response']['end_session'] = True
+        reply = random.choice(possible_replies['STOP'])
+        output_text, output_tts = reply, reply
+    elif any([help_request in answer for help_request in possible_requests['HELP']]):
+        reply = random.choice(possible_replies['HELP'])
+        output_text, output_tts = reply, reply
+    elif event['state']['user'].get('intent_remove'):
+        output_text, output_tts = gather_remove(event, response_json, possible_replies)
+    elif any([reset_request in answer for reset_request in possible_requests['RESET']]):
+        (output_text, output_tts) = reset_settings(event, response_json, sp, possible_replies["RESET"])
+    elif faculty:
+        if fuzz.token_sort_ratio(answer, "смена группы") > 75:
+            output_text, output_tts = gather_group_change(sp, response_json, possible_replies)
+        elif fuzz.token_sort_ratio(answer, "смена института") > 75:
+            output_text, output_tts = gather_faculty_change(sp, response_json, possible_replies)
         else:
-            reply = random.choice(possible_replies["FACULTY_NOT_FOUND"]["NO_MATCHES"])
-            output_text, output_tts = reply, reply
-            faculty_buttons(sp, response_json)
+            (output_text, output_tts) = gather_group(event, response_json, faculty, group, sp, rv,
+                                                     possible_requests, possible_replies)
+    elif rv.validate_faculty(answer):
+        response_json['session_state']['faculty'] = sp.ABBR_CONVERSION[answer] if sp.set_faculty(answer) else \
+            sp.NAME_ABBR[answer]
+        output_text, output_tts = "И номер группы.", "И номер группы."
+    elif answer == "":
+        output_text, output_tts = "", ""
+        faculty_buttons(sp, response_json)
+    else:
+        reply = random.choice(possible_replies["FACULTY_NOT_FOUND"]["NO_MATCHES"])
+        output_text, output_tts = reply, reply
+        faculty_buttons(sp, response_json)
     return output_text, output_tts
