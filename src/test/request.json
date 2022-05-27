@@ -1,6 +1,44 @@
 [
   {
     "request": {
+      "original_utterance": "",
+      "command": "",
+      "nlu": {
+        "entities": [],
+        "tokens": [],
+        "intents": {}
+      }
+    },
+    "session": {
+      "new": true
+    },
+    "state": {
+      "user": {},
+      "session": {}
+    },
+    "version": "Запуск навыка"
+  },
+  {
+    "request": {
+      "original_utterance": "помощь",
+      "command": "Помощь",
+      "nlu": {
+        "entities": [],
+        "tokens": [],
+        "intents": {}
+      }
+    },
+    "session": {
+      "new": true
+    },
+    "state": {
+      "user": {},
+      "session": {}
+    },
+    "version": "Информация о навыке"
+  },
+  {
+    "request": {
       "original_utterance": "сброс",
       "command": "",
       "nlu": {
@@ -17,6 +55,36 @@
       "session": {}
     },
     "version": "Сброс всех настроек при запуске навыка при отсутствии настроек"
+  },
+  {
+    "request": {
+      "original_utterance": "сброс",
+      "command": "",
+      "nlu": {
+        "entities": [],
+        "tokens": [],
+        "intents": {}
+      }
+    },
+    "session": {
+      "new": false
+    },
+    "state": {
+      "user": {
+        "saved_groups": [
+          {
+            "faculty": "ИКНТ",
+            "group": "3530901/80203"
+          }
+        ],
+        "intent_remove": true
+      },
+      "session": {
+        "faculty": "ИКНТ",
+        "group": "3530901/80203"
+      }
+    },
+    "version": "Сброс всех сохраненных настроек"
   },
   {
     "session": {
@@ -41,6 +109,30 @@
       }
     },
     "version": "Выбор группы"
+  },
+  {
+    "session": {
+      "new": false
+    },
+    "request": {
+      "command": "",
+      "original_utterance": "35309010901/80203",
+      "nlu": {
+        "tokens": [
+          "35309010901",
+          "80203"
+        ],
+        "entities": [],
+        "intents": {}
+      }
+    },
+    "state": {
+      "user": {},
+      "session": {
+        "faculty": "ИКНТ"
+      }
+    },
+    "version": "Выбор некорректной группы"
   },
   {
     "session": {
@@ -73,6 +165,53 @@
       }
     },
     "version": "Выбор даты"
+  },
+  {
+    "session": {
+      "new": false
+    },
+    "request": {
+      "command": "31 февраля",
+      "original_utterance": "31 февраля",
+      "nlu": {
+        "tokens": [
+          "31",
+          "февраля"
+        ],
+        "entities": [
+          {
+            "type": "YANDEX.NUMBER",
+            "tokens": {
+              "start": 0,
+              "end": 1
+            },
+            "value": 31
+          },
+          {
+            "type": "YANDEX.DATETIME",
+            "tokens": {
+              "start": 0,
+              "end": 2
+            },
+            "value": {
+              "month": 2,
+              "day": 31,
+              "month_is_relative": false,
+              "day_is_relative": false
+            }
+          }
+        ],
+        "intents": {}
+      }
+    },
+    "state": {
+      "user": {},
+      "session": {
+        "faculty": "ИКНТ",
+        "group": "3530901/80203"
+      }
+    },
+    "version": "Выбор некорректной даты"
   },
   {
     "session": {
@@ -114,6 +253,47 @@
       }
     },
     "version": "Удаление первой сохраненной группы"
+  },
+  {
+    "session": {
+      "new": false
+    },
+    "request": {
+      "command": "3",
+      "original_utterance": "третья",
+      "nlu": {
+        "tokens": [
+          "3"
+        ],
+        "entities": [
+          {
+            "type": "YANDEX.NUMBER",
+            "tokens": {
+              "start": 0,
+              "end": 1
+            },
+            "value": 3
+          }
+        ],
+        "intents": {}
+      }
+    },
+    "state": {
+      "user": {
+        "saved_groups": [
+          {
+            "faculty": "ИКНТ",
+            "group": "3530901/80203"
+          }
+        ],
+        "intent_remove": true
+      },
+      "session": {
+        "faculty": "ИКНТ",
+        "group": "3530901/80203"
+      }
+    },
+    "version": "Некорректное удаление сохраненной группы"
   },
   {
     "session": {
