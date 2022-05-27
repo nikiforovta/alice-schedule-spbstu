@@ -224,6 +224,36 @@
       "new": true
     },
     "request": {
+      "command": "",
+      "original_utterance": "",
+      "nlu": {
+        "tokens": [],
+        "entities": [],
+        "intents": {}
+      }
+    },
+    "state": {
+      "user": {
+        "saved_groups": [
+          {
+            "faculty": "ИКНТ",
+            "group": "3530901/80203"
+          }
+        ],
+        "intent_remove": false
+      },
+      "session": {
+        "group": null,
+        "faculty": "ИКНТ"
+      }
+    },
+    "version": "Вывод расписания сохраненной группы"
+  },
+  {
+    "session": {
+      "new": true
+    },
+    "request": {
       "command": "сброс",
       "original_utterance": "сброс",
       "nlu": {

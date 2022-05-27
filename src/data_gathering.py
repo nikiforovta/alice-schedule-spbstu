@@ -95,12 +95,12 @@ def gather_group_schedule(sp, request):
     degree = request.get('degree')
     course = request.get('course')
     faculty = request.get('faculty')
-    type = request.get('type')
+    form = request.get('type')
     spec = request.get('spec')
     group_number = request.get('group')
     output_text = ""
     output_tts = ""
-    group = sp.find_group(faculty=faculty, type=type, level=course, spec=spec, group_number=group_number, degree=degree)
+    group = sp.find_group(faculty=faculty, type=form, level=course, spec=spec, group_number=group_number, degree=degree)
     if group:
         sp.set_faculty_by_id(faculty['value'])
         sp.set_group(group['name'])
