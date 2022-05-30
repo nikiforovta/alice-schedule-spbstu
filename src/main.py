@@ -5,6 +5,7 @@ import random
 import yaml
 
 import schedule_parser
+from buttons import group_buttons, additional_buttons
 from data_gathering import gather_info
 
 
@@ -23,13 +24,14 @@ def generate_response(event):
     }
 
 
-def greeting(faculty, group, possible_greetings):
+def greeting(faculty, group, possible_greetings, sp, response_json):
     if faculty is not None:
         if group is not None:
             reply = random.choice(possible_greetings['OK']['GROUP'])
             return f"{reply} {group} ({faculty}).\n", f"{reply} {' '.join(group)} ({' '.join(faculty)}). "
         else:
             reply = random.choice(possible_greetings['NO_GROUP'])
+            group_buttons(sp, response_json)
             return f"{reply}{faculty}). ", f"{reply}{' '.join(faculty)}). "
     reply = random.choice(possible_greetings['NO_DATA'])
     return reply, reply
@@ -51,15 +53,20 @@ def handler(event, context,
         else:
             faculty = None
             group = None
+        response_json['session_state']['group'] = group
+        response_json['session_state']['faculty'] = faculty
+        sp = schedule_parser.ScheduleParser(faculty, group)
         (response_json['response']['text'], response_json['response']['tts']) = greeting(faculty, group,
-                                                                                         possible_replies["GREETING"])
+                                                                                         possible_replies["GREETING"],
+                                                                                         sp, response_json)
     else:
         faculty = event['state']['session'].get('faculty')
         group = event['state']['session'].get('group')
-    response_json['session_state']['group'] = group
-    response_json['session_state']['faculty'] = faculty
-    sp = schedule_parser.ScheduleParser(faculty, group)
+        response_json['session_state']['group'] = group
+        response_json['session_state']['faculty'] = faculty
+        sp = schedule_parser.ScheduleParser(faculty, group)
     output_text, output_tts = gather_info(event, response_json, faculty, group, sp, possible_requests, possible_replies)
     response_json['response']['text'] += output_text
     response_json['response']['tts'] += output_tts
+    additional_buttons(response_json, possible_requests)
     return json.dumps(response_json)

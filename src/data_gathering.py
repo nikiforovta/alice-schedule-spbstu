@@ -5,7 +5,7 @@ from fuzzywuzzy import fuzz
 import datetime_operations
 import request_validation
 import schedule_to_speech
-from buttons import date_buttons, faculty_buttons
+from buttons import date_buttons, faculty_buttons, group_buttons
 from group_operations import remove_group_options, save_group, list_groups, remove_group
 from recognition import group_recognition
 
@@ -153,7 +153,11 @@ def gather_info(event, response_json, faculty, group, sp, possible_requests, pos
     if group_request:
         return gather_group_schedule(sp, group_request['slots'])
     else:
-        if any([help_request in answer for help_request in possible_requests['HELP']]):
+        if any([stop_request in answer for stop_request in possible_requests['STOP']]):
+            response_json['response']['end_session'] = True
+            reply = random.choice(possible_replies['STOP'])
+            output_text, output_tts = reply, reply
+        elif any([help_request in answer for help_request in possible_requests['HELP']]):
             reply = random.choice(possible_replies['HELP'])
             output_text, output_tts = reply, reply
         elif event['state']['user'].get('intent_remove'):
@@ -172,6 +176,7 @@ def gather_info(event, response_json, faculty, group, sp, possible_requests, pos
             response_json['session_state']['faculty'] = sp.ABBR_CONVERSION[answer] if sp.set_faculty(answer) else \
                 sp.NAME_ABBR[answer]
             output_text, output_tts = "И номер группы.", "И номер группы."
+            group_buttons(sp, response_json)
         elif answer == "":
             output_text, output_tts = "", ""
             faculty_buttons(sp, response_json)
