@@ -46,13 +46,18 @@ def handler(event, context,
     with open(replies, "r", encoding='utf8') as prep:
         possible_replies = yaml.safe_load(prep)
     if event['session']['new']:
-        saved = event['state']['user'].get('saved_groups')
-        if saved and len(saved) > 0:
-            faculty = saved[0]['faculty']
-            group = saved[0]['group']
+        user_data = event['state'].get('user')
+        if user_data:
+            saved = user_data.get('saved_groups')
+            if saved and len(saved) > 0:
+                faculty = saved[0]['faculty']
+                group = saved[0]['group']
+            else:
+                faculty = None
+                group = None
         else:
-            faculty = None
-            group = None
+            faculty = user_data
+            group = user_data
         response_json['session_state']['group'] = group
         response_json['session_state']['faculty'] = faculty
         sp = schedule_parser.ScheduleParser(faculty, group)

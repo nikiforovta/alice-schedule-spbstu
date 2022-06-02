@@ -1,4 +1,4 @@
-import schedule_parser
+from ..src import schedule_parser
 
 
 class RequestValidator:
@@ -19,6 +19,4 @@ class RequestValidator:
             if groups:
                 group_match = sum(1 for group in groups if group["faculty"]['abbr'] == faculty)
                 return group_match
-            else:
-                return 0
         return -1
