@@ -56,8 +56,8 @@ def handler(event, context,
                 faculty = None
                 group = None
         else:
-            faculty = user_data
-            group = user_data
+            faculty = None
+            group = None
         response_json['session_state']['group'] = group
         response_json['session_state']['faculty'] = faculty
         sp = schedule_parser.ScheduleParser(faculty, group)
@@ -65,8 +65,13 @@ def handler(event, context,
                                                                                          possible_replies["GREETING"],
                                                                                          sp, response_json)
     else:
-        faculty = event['state']['session'].get('faculty')
-        group = event['state']['session'].get('group')
+        session_data = event['state'].get('session')
+        if session_data:
+            faculty = session_data.get('faculty')
+            group = session_data.get('group')
+        else:
+            faculty = None
+            group = None
         response_json['session_state']['group'] = group
         response_json['session_state']['faculty'] = faculty
         sp = schedule_parser.ScheduleParser(faculty, group)
