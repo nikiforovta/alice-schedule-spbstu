@@ -134,6 +134,54 @@
     },
     "version": "Выбор некорректной группы"
   },
+    {
+    "session": {
+      "new": false
+    },
+    "request": {
+      "command": "",
+      "original_utterance": "3530901/80204",
+      "nlu": {
+        "tokens": [
+          "3530901",
+          "80204"
+        ],
+        "entities": [],
+        "intents": {}
+      }
+    },
+    "state": {
+      "user": {},
+      "session": {
+        "faculty": "ИКНТ"
+      }
+    },
+    "version": "Выбор группы"
+  },
+  {
+    "session": {
+      "new": false
+    },
+    "request": {
+      "command": "",
+      "original_utterance": "35309010901/80204",
+      "nlu": {
+        "tokens": [
+          "35309010901",
+          "80204"
+        ],
+        "entities": [],
+        "intents": {}
+      }
+    },
+    "state": {
+      "user": {},
+      "session": {
+        "faculty": "ИКНТ"
+      }
+    },
+    "version": "Выбор несуществующей группы"
+  },
   {
     "session": {
       "new": false
@@ -212,6 +260,31 @@
       }
     },
     "version": "Выбор некорректной даты"
+  },
+    {
+    "session": {
+      "new": false
+    },
+    "request": {
+      "command": "пятае септябтя",
+      "original_utterance": "пятае септябтя",
+      "nlu": {
+        "tokens": [
+          "пятае",
+          "септябтя"
+        ],
+        "entities": [],
+        "intents": {}
+      }
+    },
+    "state": {
+      "user": {},
+      "session": {
+        "faculty": "ИКНТ",
+        "group": "3530901/80203"
+      }
+    },
+    "version": "Некорректный выбор даты"
   },
   {
     "session": {
@@ -597,7 +670,88 @@
         "faculty": "ИКНТ"
       }
     },
-    "version": "Улучшенная версия"
+    "version": "Модифицированная версия с датой"
+  },
+  {
+    "session": {
+      "new": false
+    },
+    "request": {
+      "command": "расписания 4 курса бакалавру икнт 1 группа очное направление инфроматика и вычислительная техника",
+      "original_utterance": "расписания четвертого курса бакалавру икнт первая группа очное направление инфроматика и вычислительная техника",
+      "nlu": {
+        "tokens": [
+          "расписания",
+          "4",
+          "курса",
+          "бакалавру",
+          "икнт",
+          "1",
+          "группа",
+          "очное",
+          "направление",
+          "инфроматика",
+          "и",
+          "вычислительная",
+          "техника"
+        ],
+        "entities": [
+          {
+            "type": "YANDEX.NUMBER",
+            "value": 4
+          },
+          {
+            "type": "YANDEX.NUMBER",
+            "value": 1
+          }
+        ],
+        "intents": {
+          "group_schedule": {
+            "slots": {
+              "date": {
+                "type": "YANDEX.DATETIME",
+                "value": {
+                  "day": 1,
+                  "day_is_relative": true
+                }
+              },
+              "degree": {
+                "type": "Degree",
+                "value": "bachelor"
+              },
+              "course": {
+                "type": "YANDEX.NUMBER",
+                "value": 4
+              },
+              "type": {
+                "type": "Type",
+                "value": "common"
+              },
+              "spec": {
+                "type": "YANDEX.STRING",
+                "value": "инфроматика и вычислительная техника"
+              },
+              "faculty": {
+                "type": "Faculty",
+                "value": "95"
+              },
+              "group": {
+                "type": "YANDEX.NUMBER",
+                "value": 1
+              }
+            }
+          }
+        }
+      }
+    },
+    "state": {
+      "user": {},
+      "session": {
+        "group": "3530901/80203",
+        "faculty": "ИКНТ"
+      }
+    },
+    "version": "Модифицированная версия без даты"
   },
   {
     "session": {

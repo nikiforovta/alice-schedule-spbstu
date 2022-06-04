@@ -160,10 +160,10 @@ def gather_info(event, response_json, faculty, group, sp, possible_requests, pos
         elif any([help_request in answer for help_request in possible_requests['HELP']]):
             reply = random.choice(possible_replies['HELP'])
             output_text, output_tts = reply, reply
-        elif event['state']['user'].get('intent_remove'):
-            output_text, output_tts = gather_remove(event, response_json, possible_replies)
         elif any([reset_request in answer for reset_request in possible_requests['RESET']]):
             (output_text, output_tts) = reset_settings(event, response_json, sp, possible_replies["RESET"])
+        elif event['state']['user'].get('intent_remove'):
+            output_text, output_tts = gather_remove(event, response_json, possible_replies)
         elif faculty:
             if fuzz.token_sort_ratio(answer, "смена группы") > 75:
                 output_text, output_tts = gather_group_change(sp, response_json, possible_replies)
