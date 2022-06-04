@@ -20,7 +20,7 @@ def generate_response(event):
             'buttons': [],
         },
         'user_state_update': {},
-        'session_state': event['state']['session']
+        'session_state': event['state'].get('session')
     }
 
 
