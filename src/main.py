@@ -20,7 +20,7 @@ def generate_response(event):
             'buttons': [],
         },
         'user_state_update': {},
-        'session_state': event['state'].get('session')
+        'session_state': event.get('state', dict()).get('session')
     }
 
 
@@ -46,7 +46,7 @@ def handler(event, context,
     with open(replies, "r", encoding='utf8') as prep:
         possible_replies = yaml.safe_load(prep)
     if event['session']['new']:
-        user_data = event['state'].get('user')
+        user_data = event.get('state', dict()).get('user', dict())
         if user_data:
             saved = user_data.get('saved_groups')
             if saved and len(saved) > 0:
@@ -65,7 +65,7 @@ def handler(event, context,
                                                                                          possible_replies["GREETING"],
                                                                                          sp, response_json)
     else:
-        session_data = event['state'].get('session')
+        session_data = event.get('state', dict()).get('session', dict())
         if session_data:
             faculty = session_data.get('faculty')
             group = session_data.get('group')
