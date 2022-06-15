@@ -68,25 +68,27 @@ def gather_group(event, response_json, faculty, group, sp, rv, possible_requests
                 (output_text, output_tts) = gather_date(event, response_json, sp, possible_replies)
     else:
         possible_group = group_recognition(event['request']['nlu']['tokens'])
-        group_search = rv.validate_group(faculty, possible_group)
-        if group_search == 0:
+        if not possible_group:
             reply = random.choice(possible_replies['GROUP_NOT_FOUND']["NO_MATCHES"])
             output_text = reply
             output_tts = reply
-        elif group_search == 1:
-            sp.set_group(possible_group)
-            response_json['session_state']['group'] = possible_group
-            (output_text, output_tts) = schedule_to_speech.translate(sp.get_schedule())
-            tip = random.choice(possible_replies['TIP'])
-            output_text += tip
-            output_tts += tip
-        elif group_search == -1:
-            output_text = ""
-            output_tts = ""
         else:
-            reply = random.choice(possible_replies["GROUP_NOT_FOUND"]["TOO_MANY_FOUND"])
-            output_text = reply
-            output_tts = reply
+            group_search = rv.validate_group(faculty, possible_group)
+            if group_search < 1:
+                reply = random.choice(possible_replies['GROUP_NOT_FOUND']["NO_MATCHES"])
+                output_text = reply
+                output_tts = reply
+            elif group_search == 1:
+                sp.set_group(possible_group)
+                response_json['session_state']['group'] = possible_group
+                (output_text, output_tts) = schedule_to_speech.translate(sp.get_schedule())
+                tip = random.choice(possible_replies['TIP'])
+                output_text += tip
+                output_tts += tip
+            else:
+                reply = random.choice(possible_replies["GROUP_NOT_FOUND"]["TOO_MANY_FOUND"])
+                output_text = reply
+                output_tts = reply
     return output_text, output_tts
 
 
